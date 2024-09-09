@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+  <title>架空神社</title>
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #e3f2fd;
+      font-family: 'Roboto', sans-serif;
+    }
+    .main-title {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 36px;
+      font-weight: bold;
+      color: #0288d1;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    .section-title {
+      font-size: 28px;
+      font-weight: bold;
+      margin-top: 20px;
+      color: #0288d1;
+      border-bottom: 2px solid #0288d1;
+      padding-bottom: 10px;
+    }
+    .content {
+      margin: 20px auto;
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      padding: 20px;
+      max-width: 800px;
+    }
+    .image-container {
+      text-align: center;
+      margin: 20px 0;
+    }
+    .image-container img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      border: 5px solid #0288d1;
+    }
+    .map-container {
+      height: 300px;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-top: 20px;
+    }
+    .contact-info {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .contact-info p {
+      margin: 5px 0;
+    }
+    .contact-info a {
+      color: #0288d1;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .v-btn {
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <v-app>
+      <v-container>
+        <!-- ページ上部に表題を追加 -->
+        <h1 class="main-title">架空神社</h1>
+
+        <!-- 神社の写真 -->
+        <div class="image-container">
+          <img src="Shrine1.jpg" alt="神社の写真">
+        </div>
+
+        <!-- 神社の紹介 -->
+        <v-card class="content">
+          <v-card-title class="section-title">神社の紹介</v-card-title>
+          <v-card-text>
+            <p>架空神社は、静かな森の中に佇む歴史ある神社です。四季折々の美しい風景と共に、心安らぐひとときをお過ごしください。</p>
+          </v-card-text>
+        </v-card>
+
+        <!-- 参拝方法 -->
+        <v-card class="content">
+          <v-card-title class="section-title">参拝方法</v-card-title>
+          <v-card-text>
+            <ol>
+              <li>鳥居をくぐる前に一礼します。</li>
+              <li>手水舎で手と口を清めます。</li>
+              <li>本殿に進み、賽銭を入れます。</li>
+              <li>鈴を鳴らし、二礼二拍手一礼を行います。</li>
+            </ol>
+          </v-card-text>
+        </v-card>
+
+        <!-- 交通アクセス -->
+        <v-card class="content">
+          <v-card-title class="section-title">交通アクセス</v-card-title>
+          <v-card-text>
+            <p>住所: 東京都練馬区架空町1-2-3</p>
+            <p>最寄り駅: 架空駅（徒歩10分）</p>
+            <div class="map-container">
+              <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3241.890123456789!2d139.6917063153157!3d35.68948798019195!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x60188c0a4d8b8b8b%3A0x8d8b8b8b8b8b8b8b!2sTokyo%20Tower!5e0!3m2!1sen!2sjp!4v1633072800000!5m2!1sen!2sjp" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+            </div>
+          </v-card-text>
+        </v-card>
+
+        <!-- お問い合わせ -->
+        <v-card class="content">
+          <v-card-title class="section-title">お問い合わせ</v-card-title>
+          <v-card-text>
+            <div class="contact-info">
+              <p>電話番号: 03-1234-5678</p>
+              <p>メール: <a href="mailto:info@kakushinjinja.jp">info@kakushinjinja.jp</a></p>
+            </div>
+          </v-card-text>
+        </v-card>
+
+        <!-- 公式ショップ -->
+        <v-card class="content">
+          <v-card-title class="section-title">公式ショップ</v-card-title>
+          <v-card-text>
+            <p>神社の公式グッズやお守りなどはこちらからご購入いただけます。</p>
+            <v-btn color="primary" href="index_ProductsPurchasePage.html" target="_blank">公式ショップに行く</v-btn>
+          </v-card-text>
+        </v-card>
+
+      </v-container>
+    </v-app>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+
+  <script>
+    new Vue({
+      el: '#app',
+      vuetify: new Vuetify(),
+      data() {
+        return {
+          // データをここに追加
+        };
+      },
+      methods: {
+        // メソッドをここに追加
+      }
+    });
+  </script>
+</body>
+</html>

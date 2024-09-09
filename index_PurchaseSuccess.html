@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+  <title>購入完了</title>
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+  <style>
+    .confirmation-container {
+      margin: 20px auto;
+      max-width: 600px;
+    }
+    .confirmation-title {
+      margin-bottom: 20px;
+      text-align: center;
+      font-size: 28px;
+      font-weight: bold;
+      color: #6200ea;
+    }
+    .confirmation-section {
+      margin-bottom: 20px;
+    }
+    .center-title {
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+    .center-text {
+      text-align: center;
+    }
+    .center-button {
+      display: flex;
+      justify-content: center;
+    }
+    .v-stepper-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .v-stepper-step {
+      flex: 1;
+      text-align: center;
+      position: relative;
+    }
+    .v-stepper-step .v-stepper-step__label {
+      margin-top: 8px;
+      font-size: 14px;
+    }
+    .v-stepper-step--active .v-stepper-step__label {
+      color: #6200ea;
+      font-weight: bold;
+    }
+    .v-stepper-step--completed .v-stepper-step__label {
+      color: #9e9e9e;
+      font-weight: normal;
+    }
+    .v-stepper-step--inactive .v-stepper-step__label {
+      color: #9e9e9e;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <v-app>
+      <v-container class="confirmation-container">
+        <!-- フローチャートを追加 -->
+        <v-stepper v-model="step" class="mb-5">
+          <v-stepper-header>
+            <v-stepper-step 
+              :complete="step > 1" 
+              step="1" 
+              class="v-stepper-step--completed"
+              :class="{ 'v-stepper-step--inactive': step > 1 }"
+            >
+              顧客情報確認
+            </v-stepper-step>
+            <v-divider></v-divider>
+            <v-stepper-step 
+              :complete="step > 2" 
+              step="2" 
+              class="v-stepper-step--completed"
+              :class="{ 'v-stepper-step--inactive': step > 2 }"
+            >
+              最終確認
+            </v-stepper-step>
+            <v-divider></v-divider>
+            <v-stepper-step 
+              :complete="step > 3" 
+              step="3"
+              class="v-stepper-step--active"
+            >
+              完了
+            </v-stepper-step>
+          </v-stepper-header>
+        </v-stepper>
+
+        <!-- ページ上部に表題を追加 -->
+        <h1 class="confirmation-title">購入完了</h1>
+
+        <!-- 購入完了メッセージ -->
+        <v-card class="confirmation-section">
+          <v-card-title class="center-title">ご購入ありがとうございます！</v-card-title>
+          <v-card-text class="center-text">
+            ご注文の詳細はメールにて送信されます。<br>
+            ご確認ください。
+          </v-card-text>
+        </v-card>
+
+        <!-- ホームに戻るボタン -->
+        <v-row>
+          <v-col cols="12" class="center-button">
+            <v-btn color="primary" @click="goHome" large>ホームに戻る</v-btn>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-app>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+
+  <script>
+    new Vue({
+      el: '#app',
+      vuetify: new Vuetify(),
+      data() {
+        return {
+          step: 3  // 現在のステップを「完了」に設定
+        };
+      },
+      methods: {
+        goHome() {
+          window.location.href = 'index_ProductsPurchasePage.html';
+        }
+      }
+    });
+  </script>
+</body>
+</html>

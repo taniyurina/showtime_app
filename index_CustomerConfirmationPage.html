@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+  <title>顧客情報確認</title>
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+  <style>
+    .confirmation-container {
+      margin: 20px auto;
+      max-width: 600px;
+    }
+    .confirmation-title {
+      margin-bottom: 20px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      color: #6200ea;
+    }
+    .confirmation-section {
+      margin-bottom: 20px;
+    }
+    .form-field {
+      margin-bottom: 10px;
+    }
+    .v-stepper-step.v-stepper-step--active {
+      color: #6200ea;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <v-app>
+      <v-container class="confirmation-container">
+        <!-- フローチャートを追加 -->
+        <v-stepper v-model="step" class="mb-5">
+          <v-stepper-header>
+            <v-stepper-step :complete="step > 1" step="1" active-class="v-stepper-step--active">顧客情報確認</v-stepper-step>
+            <v-divider></v-divider>
+            <v-stepper-step :complete="step > 2" step="2">最終確認</v-stepper-step>
+            <v-divider></v-divider>
+            <v-stepper-step :complete="step > 3" step="3">完了</v-stepper-step>
+          </v-stepper-header>
+        </v-stepper>
+
+        <!-- ページ上部に表題を追加 -->
+        <h1 class="confirmation-title">顧客情報確認</h1>
+
+        <!-- 顧客情報入力欄 -->
+        <v-card class="confirmation-section">
+          <v-card-title>個人情報入力</v-card-title>
+          <v-card-text>
+            <v-form>
+              <v-row>
+                <v-col cols="12" class="form-field">
+                  <v-text-field v-model="name" label="氏名" outlined dense required></v-text-field>
+                </v-col>
+                <v-col cols="12" class="form-field">
+                  <v-text-field v-model="phone" label="電話番号" outlined dense required></v-text-field>
+                </v-col>
+                <v-col cols="12" class="form-field">
+                  <v-text-field v-model="email" label="メールアドレス" outlined dense required></v-text-field>
+                </v-col>
+                <v-col cols="12" class="form-field">
+                  <v-text-field v-model="address" label="住所" outlined dense required></v-text-field>
+                </v-col>
+              </v-row>
+            </v-form>
+          </v-card-text>
+        </v-card>
+
+        <!-- パスワード入力欄 -->
+        <v-card class="confirmation-section">
+          <v-card-title>マイページログイン用パスワード</v-card-title>
+          <v-card-text>
+            <v-form>
+              <v-row>
+                <v-col cols="12" class="form-field">
+                  <v-text-field v-model="password" label="パスワード" type="password" outlined dense required></v-text-field>
+                </v-col>
+              </v-row>
+            </v-form>
+          </v-card-text>
+        </v-card>
+
+        <!-- 選択商品確認スペース -->
+        <v-card class="confirmation-section">
+          <v-card-title>選択商品確認</v-card-title>
+          <v-card-text>
+            <v-list>
+              <v-list-item v-for="item in cart" :key="item.id">
+                <v-list-item-content>
+                  <v-list-item-title>{{ item.name }}</v-list-item-title>
+                  <v-list-item-subtitle>数量: {{ item.quantity }}</v-list-item-subtitle>
+                  <v-list-item-subtitle>価格: {{ item.price }}円</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+            <!-- 合計金額表示 -->
+            <v-divider></v-divider>
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title>合計金額</v-list-item-title>
+                <v-list-item-subtitle>{{ totalPrice }}円</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+          </v-card-text>
+        </v-card>
+
+        <!-- 次へボタン -->
+        <v-row class="confirmation-button">
+          <v-col cols="12">
+            <v-btn color="primary" @click="goToFinalConfirmationPage" large>最終確認画面へ</v-btn>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-app>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+  <script>
+    new Vue({
+      el: '#app',
+      vuetify: new Vuetify(),
+      data() {
+        return {
+          step: 1,
+          name: '',
+          phone: '',
+          email: '',
+          address: '',
+          password: '', // パスワードプロパティを追加
+          cart: []
+        };
+      },
+      computed: {
+        totalPrice() {
+          return this.cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+        }
+      },
+      created() {
+        const cartData = localStorage.getItem('cart');
+        if (cartData) {
+          this.cart = JSON.parse(cartData);
+        }
+      },
+      methods: {
+        goToFinalConfirmationPage() {
+          // Save customer information to localStorage
+          localStorage.setItem('customer', JSON.stringify({
+            name: this.name,
+            phone: this.phone,
+            email: this.email,
+            address: this.address,
+            password: this.password // パスワードも保存
+          }));
+          window.location.href = 'index_FinalConfirmationPage.html';
+        }
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>最終確認</title>
+<link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+<style>
+    /* スタイルは以前のものと同じ */
+</style>
+</head>
+<body>
+<div id="app">
+<v-app>
+<v-container class="confirmation-container">
+<!-- フローチャートを追加 -->
+<v-stepper v-model="step" class="mb-5">
+<v-stepper-header>
+<v-stepper-step :complete="step > 1" step="1">顧客情報確認</v-stepper-step>
+<v-divider></v-divider>
+<v-stepper-step :complete="step > 2" step="2" class="v-stepper-step--active">最終確認</v-stepper-step>
+<v-divider></v-divider>
+<v-stepper-step :complete="step > 3" step="3">完了</v-stepper-step>
+</v-stepper-header>
+</v-stepper>
+<!-- ページ上部に表題を追加 -->
+<h1 class="confirmation-title">最終確認</h1>
+<!-- 顧客情報確認 -->
+<v-card class="confirmation-section">
+<v-card-title>顧客情報</v-card-title>
+<v-card-text>
+<v-list>
+<v-list-item>
+<v-list-item-content>
+<v-list-item-title>氏名</v-list-item-title>
+<v-list-item-subtitle>{{ customer.name }}</v-list-item-subtitle>
+</v-list-item-content>
+</v-list-item>
+<v-list-item>
+<v-list-item-content>
+<v-list-item-title>電話番号</v-list-item-title>
+<v-list-item-subtitle>{{ customer.phone }}</v-list-item-subtitle>
+</v-list-item-content>
+</v-list-item>
+<v-list-item>
+<v-list-item-content>
+<v-list-item-title>メールアドレス</v-list-item-title>
+<v-list-item-subtitle>{{ customer.email }}</v-list-item-subtitle>
+</v-list-item-content>
+</v-list-item>
+<v-list-item>
+<v-list-item-content>
+<v-list-item-title>住所</v-list-item-title>
+<v-list-item-subtitle>{{ customer.address }}</v-list-item-subtitle>
+</v-list-item-content>
+</v-list-item>
+<v-list-item>
+<v-list-item-content>
+<v-list-item-title>パスワード</v-list-item-title>
+<v-list-item-subtitle>********</v-list-item-subtitle>
+</v-list-item-content>
+</v-list-item>
+</v-list>
+</v-card-text>
+</v-card>
+<!-- 選択商品確認スペース -->
+<v-card class="confirmation-section">
+<v-card-title>選択商品確認</v-card-title>
+<v-card-text>
+<v-list>
+<v-list-item v-for="item in cart" :key="item.id">
+<v-list-item-content>
+<v-list-item-title>{{ item.name }}</v-list-item-title>
+<v-list-item-subtitle>数量: {{ item.quantity }}</v-list-item-subtitle>
+<v-list-item-subtitle>価格: {{ item.price }}円</v-list-item-subtitle>
+</v-list-item-content>
+</v-list-item>
+</v-list>
+<!-- 合計金額表示 -->
+<v-divider></v-divider>
+<v-list-item>
+<v-list-item-content>
+<v-list-item-title>合計金額</v-list-item-title>
+<v-list-item-subtitle>{{ totalPrice }}円</v-list-item-subtitle>
+</v-list-item-content>
+</v-list-item>
+</v-card-text>
+</v-card>
+<!-- 完了ボタン -->
+<v-row class="confirmation-button">
+<v-col cols="12">
+<v-btn color="primary" @click="completeOrder" large>注文を確定する</v-btn>
+</v-col>
+</v-row>
+</v-container>
+</v-app>
+</div>
+ 
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+<script>
+    new Vue({
+      el: '#app',
+      vuetify: new Vuetify(),
+      data() {
+        return {
+          step: 2,
+          customer: {},
+          cart: []
+        };
+      },
+      computed: {
+        totalPrice() {
+          return this.cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+        }
+      },
+      created() {
+        // データを localStorage から読み込む
+        const customerData = localStorage.getItem('customer');
+        if (customerData) {
+          this.customer = JSON.parse(customerData);
+        }
+        const cartData = localStorage.getItem('cart');
+        if (cartData) {
+          this.cart = JSON.parse(cartData);
+        }
+      },
+      methods: {
+        async completeOrder() {
+          const orderDetails = {
+            CustomerName: this.customer.name,
+            PhoneNumber: this.customer.phone,
+            EmailAddress: this.customer.email,
+            Address: this.customer.address,
+            Password: this.customer.password,
+            OrderDate: new Date().toISOString(),
+            TotalAmount: this.totalPrice,
+            ItemName: this.cart.map(item => item.name),
+            Quantity: this.cart.map(item => item.quantity.toString())
+          };
+ 
+          try {
+            const response = await fetch('https://m3h-hasegawa-recreation3.azurewebsites.net/api/InsertCustomerOrder', { // 送信先 URL を指定
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(orderDetails)
+            });
+ 
+            if (response.ok) {
+              localStorage.clear(); // 注文完了後にローカルストレージをクリア
+              window.location.href = 'index_PurchaseSuccess.html'; // ホームページにリダイレクト
+            } else {
+              alert('注文に失敗しました。後ほど再試行してください。');
+            }
+          } catch (error) {
+            console.error('注文処理中にエラーが発生しました:', error);
+            alert('注文に失敗しました。後ほど再試行してください。');
+          }
+        }
+      }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+  <title>商品注文アプリ</title>
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font/css/materialdesignicons.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(135deg, #e0f2f1, #b2dfdb);
+      font-family: 'Roboto', sans-serif;
+    }
+    .app-bar {
+      background-color: #004d40;
+      color: white;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+    .product-card {
+      margin: 15px;
+      transition: transform 0.3s, box-shadow 0.3s;
+      border-radius: 15px;
+      overflow: hidden;
+      background-color: white;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    .product-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    }
+    .order-button {
+      background-color: #004d40;
+      color: white;
+      transition: background-color 0.3s;
+      border-radius: 20px;
+    }
+    .order-button:hover {
+      background-color: #00251a;
+    }
+    .product-image {
+      border-bottom: 3px solid #004d40;
+      cursor: pointer;
+    }
+    .confirmation-button {
+      margin-top: 30px;
+      text-align: center;
+    }
+    .remove-button {
+      color: #d32f2f;
+      cursor: pointer;
+    }
+    .v-tooltip__content {
+      background-color: #004d40;
+      color: white;
+      font-size: 14px;
+      border-radius: 4px;
+    }
+    .v-tooltip__content .tooltip-content {
+      padding: 12px;
+    }
+    .v-dialog__content--img {
+      text-align: center;
+    }
+    .v-dialog__content--img img {
+      max-width: 100%;
+      max-height: 80vh;
+      object-fit: contain;
+    }
+    [v-cloak] {
+      display: none;
+    }
+    .v-list-item-action .v-btn {
+      min-width: auto;
+    }
+  </style>
+</head>
+<body>
+  <div id="app" v-cloak>
+    <v-app>
+      <v-app-bar class="app-bar" app>
+        <v-toolbar-title>商品注文アプリ</v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-btn icon @click="showCart">
+          <v-badge :content="cartTotalItems" color="red" overlap>
+            <v-icon>mdi-cart</v-icon>
+          </v-badge>
+        </v-btn>
+      </v-app-bar>
+
+      <!-- カートダイアログ -->
+      <v-dialog v-model="cartDialog" max-width="600px">
+        <v-card>
+          <v-card-title>
+            <span class="headline">カートの内容</span>
+          </v-card-title>
+          <v-card-text>
+            <v-list>
+              <v-list-item-group v-if="cart.length">
+                <v-list-item v-for="item in cart" :key="item.id">
+                  <v-list-item-content>
+                    <v-list-item-title>{{ item.name }}</v-list-item-title>
+                    <v-list-item-subtitle>数量: {{ item.quantity }}</v-list-item-subtitle>
+                    <v-list-item-subtitle>価格: {{ item.price * item.quantity }}円</v-list-item-subtitle>
+                  </v-list-item-content>
+                  <v-list-item-action>
+                    <v-btn class="remove-button" @click="removeFromCart(item.id)" icon>
+                      <v-icon>mdi-delete</v-icon>
+                    </v-btn>
+                  </v-list-item-action>
+                </v-list-item>
+              </v-list-item-group>
+              <v-list-item v-else>
+                <v-list-item-content>
+                  カートは空です。
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="primary" @click="cartDialog = false">閉じる</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <!-- 画像ダイアログ -->
+      <v-dialog v-model="imageDialog" max-width="80%">
+        <v-card class="v-dialog__content--img">
+          <v-img :src="selectedImage" contain></v-img>
+        </v-card>
+      </v-dialog>
+
+      <v-main>
+        <v-container>
+          <v-row>
+            <v-col v-for="product in products" :key="product.id" cols="12" md="4">
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-card class="product-card" v-bind="attrs" v-on="on">
+                    <v-img :src="product.image" height="200px" class="product-image" @click="showImage(product.image)"></v-img>
+                    <v-card-title>{{ product.name }}</v-card-title>
+                    <v-card-subtitle>{{ product.price }}円</v-card-subtitle>
+                    <v-card-actions>
+                      <v-text-field v-model.number="product.quantity" label="数量" type="number" min="1" hide-details></v-text-field>
+                      <v-btn class="order-button" @click="addToCart(product)" rounded>
+                        <v-icon>mdi-cart-plus</v-icon> カートに入れる
+                      </v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </template>
+                <div class="tooltip-content">
+                  <strong>{{ product.name }}</strong><br>
+                  価格: {{ product.price }}円<br>
+                  <em>{{ product.description }}</em>
+                </div>
+              </v-tooltip>
+            </v-col>
+          </v-row>
+          
+          <v-row class="confirmation-button">
+            <v-col cols="12">
+              <v-btn color="primary" @click="goToConfirmationPage" large>顧客情報確認画面へ</v-btn>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-main>
+    </v-app>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+
+  <script>
+    new Vue({
+      el: '#app',
+      vuetify: new Vuetify({
+        icons: {
+          iconfont: 'mdi',
+        },
+      }),
+      data() {
+        return {
+          products: [
+            { id: 1, name: 'お守り(合格祈願)', price: 700, image: 'goukaku_kigan.jpg', quantity: 1, description: 'このお守りは試験合格を祈願するための特別なアイテムです。合格のご利益を願って持っておいてください。' },
+            { id: 2, name: 'お守り(家内安全)', price: 700, image: 'kanai_anzen.jpg', quantity: 1, description: '家族全員の安全と健康を祈るためのお守りです。家庭の平安を保つためにどうぞ。' },
+            { id: 3, name: 'お守り(交通安全)', price: 700, image: 'koutsu_anzen.jpg', quantity: 1, description: '運転中の安全を守るための交通安全のお守りです。事故やトラブルから守ってくれることでしょう。' },
+            { id: 4, name: '御朱印帳', price: 1500, image: 'gosyuin_chou.png', quantity: 1, description: '御朱印を集めるための帳面です。旅行や参拝の記録としてお使いください。' },
+            { id: 5, name: 'お神札', price: 1000, image: 'jinja_omamori_ofuda.png', quantity: 1, description: '神社で授与されるお神札です。家やお店にお祀りして、神様の加護を受けましょう。' },
+            { id: 6, name: 'パワーストーン', price: 2000, image: 'power_stone.png', quantity: 1, description: 'エネルギーを引き出すとされるパワーストーンです。持つことでポジティブなエネルギーを得られるでしょう。' }
+          ],
+          cart: [],
+          cartDialog: false,
+          imageDialog: false,
+          selectedImage: ''
+        };
+      },
+      computed: {
+        cartTotalItems() {
+          return this.cart.reduce((total, item) => total + item.quantity, 0);
+        }
+      },
+      methods: {
+        addToCart(product) {
+          if (product.quantity <= 0) {
+            alert('商品数量は1以上でなければなりません。');
+            return;
+          }
+          const cartItem = this.cart.find(item => item.id === product.id);
+          if (cartItem) {
+            cartItem.quantity += product.quantity;
+          } else {
+            this.cart.push({ ...product });
+          }
+          alert(`${product.name}が${product.quantity}個カートに入りました！`);
+        },
+        goToConfirmationPage() {
+          if (this.cart.length === 0) {
+            alert('カートに商品がありません。商品を1つ以上選択してください。');
+            return;
+          }
+          localStorage.setItem('cart', JSON.stringify(this.cart));
+          window.location.href = 'index_CustomerConfirmationPage.html';
+        },
+        showCart() {
+          this.cartDialog = true;
+        },
+        removeFromCart(productId) {
+          this.cart = this.cart.filter(item => item.id !== productId);
+        },
+        showImage(imageSrc) {
+          this.selectedImage = imageSrc;
+          this.imageDialog = true;
+        }
+      }
+    });
+  </script>
+</body>
+</html>
