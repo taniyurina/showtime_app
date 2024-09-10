@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+  <title>ご祈祷予約 | 架空神社</title>
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+  <style>
+    .reservation-container {
+      margin: 20px auto;
+      max-width: 600px;
+    }
+    .reservation-title {
+      margin-bottom: 20px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      color: #6200ea;
+    }
+    .reservation-section {
+      margin-bottom: 20px;
+    }
+    .form-field {
+      margin-bottom: 10px;
+    }
+    .v-stepper-step.v-stepper-step--active {
+      color: #6200ea;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <v-app>
+      <v-container class="reservation-container">
+        <v-stepper v-model="step" class="mb-5">
+          <v-stepper-header>
+            <v-stepper-step :complete="step > 1" step="1" active-class="v-stepper-step--active">ご祈祷予約</v-stepper-step>
+            <v-divider></v-divider>
+            <v-stepper-step :complete="step > 2" step="2">最終確認</v-stepper-step>
+            <v-divider></v-divider>
+            <v-stepper-step :complete="step > 3" step="3">完了</v-stepper-step>
+          </v-stepper-header>
+        </v-stepper>
+
+        <h1 class="reservation-title">ご祈祷予約</h1>
+
+        <v-card class="reservation-section">
+          <v-card-title>ご祈祷予約フォーム</v-card-title>
+          <v-card-text>
+            <v-form>
+              <v-row>
+                <v-col cols="12" class="form-field">
+                  <v-text-field v-model="name" label="氏名" outlined dense required></v-text-field>
+                </v-col>
+                <v-col cols="12" class="form-field">
+                  <v-text-field v-model="phone" label="電話番号" type="tel" outlined dense required></v-text-field>
+                </v-col>
+                <v-col cols="12" class="form-field">
+                  <v-text-field v-model="email" label="メールアドレス" type="email" outlined dense required></v-text-field>
+                </v-col>
+                <v-col cols="12" class="form-field">
+                  <v-text-field v-model="address" label="住所" outlined dense required></v-text-field>
+                </v-col>
+                <v-col cols="12" class="form-field">
+                  <v-menu
+                    v-model="menu"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                    offset-y
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                        label="予約日"
+                        readonly
+                        v-bind="attrs"
+                        v-on="on"
+                        :value="date"
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker v-model="date" @input="menu = false"></v-date-picker>
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" class="form-field">
+                  <v-select
+                    v-model="time"
+                    :items="availableTimes"
+                    label="ご希望の時間"
+                    outlined
+                    dense
+                    required
+                  ></v-select>
+                </v-col>
+                <v-col cols="12" class="form-field">
+                  <v-card>
+                    <v-card-title>マイページログイン用パスワード</v-card-title>
+                    <v-card-text>
+                      <v-text-field v-model="password" label="パスワード" type="password" outlined dense required></v-text-field>
+                    </v-card-text>
+                  </v-card>
+                </v-col>
+              </v-row>
+            </v-form>
+          </v-card-text>
+        </v-card>
+
+        <v-row class="reservation-button">
+          <v-col cols="12">
+            <v-btn color="primary" @click="goToFinalConfirmationPage" large>最終確認画面へ</v-btn>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-app>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+  <script>
+    new Vue({
+      el: '#app',
+      vuetify: new Vuetify(),
+      data() {
+        return {
+          step: 1,
+          name: '',
+          phone: '',
+          email: '',
+          address: '',
+          date: '',
+          time: '',
+          menu: false,
+          availableTimes: [
+            '10:00', '11:00', '12:00', 
+            '13:00', '14:00', '15:00'
+          ],
+          password: ''
+        };
+      },
+      methods: {
+        goToFinalConfirmationPage() {
+          // Save reservation information to localStorage
+          localStorage.setItem('reservationprayer', JSON.stringify({
+            name: this.name,
+            phone: this.phone,
+            email: this.email,
+            address: this.address,
+            date: this.date,
+            time: this.time,
+            password: this.password 
+          }));
+          window.location.href = 'index_PrayerReservationConfirmationPage.html'; 
+        }
+      }
+    });
+  </script>
+</body>
+</html>
