@@ -37,9 +37,7 @@
         <v-stepper v-model="step" class="mb-5">
           <v-stepper-header>
             <v-stepper-step :complete="step > 1" step="1" active-class="v-stepper-step--active">顧客情報確認</v-stepper-step>
-            <v-divider></v-divider>
             <v-stepper-step :complete="step > 2" step="2">最終確認</v-stepper-step>
-            <v-divider></v-divider>
             <v-stepper-step :complete="step > 3" step="3">完了</v-stepper-step>
           </v-stepper-header>
         </v-stepper>

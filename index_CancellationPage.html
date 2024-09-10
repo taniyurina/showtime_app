@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+<title>退会ページ</title>
+<link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+<style>
+    [v-cloak] {
+      display: none;
+    }
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
+      font-family: 'Roboto', sans-serif;
+    }
+    .deactivate-container {
+      margin: 20px auto;
+      max-width: 800px;
+      padding: 20px;
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    .deactivate-title {
+      text-align: center;
+      font-size: 28px;
+      font-weight: bold;
+      color: #d32f2f;
+      margin-bottom: 20px;
+    }
+    .deactivate-content {
+      margin-bottom: 20px;
+      font-size: 16px;
+      color: #333;
+    }
+    .profile-info {
+      margin-bottom: 20px;
+    }
+    .profile-info p {
+      font-size: 16px;
+      color: #333;
+      margin: 5px 0;
+    }
+    .deactivate-button {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .deactivate-button .v-btn {
+      border-radius: 20px;
+      background-color: #d32f2f; /* 赤色 */
+      color: #ffffff;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .deactivate-button .v-btn:hover {
+      background-color: #b71c1c; /* ホバー時の色 */
+      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
+    }
+    .back-to-mypage {
+      text-align: center;
+      margin-top: 10px;
+    }
+    .back-to-mypage a {
+      color: #007bff;
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: bold;
+      transition: color 0.3s ease, text-decoration 0.3s ease;
+    }
+    .back-to-mypage a:hover {
+      color: #0056b3;
+      text-decoration: underline;
+    }
+</style>
+</head>
+<body>
+<div id="app" v-cloak>
+<v-app>
+<v-container class="deactivate-container">
+<h1 class="deactivate-title">退会手続き</h1>
+<div class="deactivate-content">
+  <p>このページではアカウントを退会する手続きを行います。</p>
+  <p>退会手続きが完了すると、アカウント情報とすべてのデータが削除され、復元することはできません。</p>
+  <p>本当に退会しますか？</p>
+</div>
+<div class="profile-info">
+  <p><strong>氏名:</strong> {{ name }}</p>
+  <p><strong>電話番号:</strong> {{ phone }}</p>
+  <p><strong>メールアドレス:</strong> {{ email }}</p>
+  <p><strong>住所:</strong> {{ address }}</p>
+</div>
+<div class="deactivate-button">
+  <v-btn @click="handleDeactivation" large>退会する</v-btn>
+</div>
+<div class="back-to-mypage">
+  <a href="index_MyPage.html">マイページに戻る</a>
+</div>
+</v-container>
+</v-app>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    new Vue({
+      el: '#app',
+      vuetify: new Vuetify(),
+      data() {
+        return {
+          name: '',
+          phone: '',
+          email: '',
+          address: ''
+        };
+      },
+      async mounted() {
+        const CustomerID = sessionStorage.getItem('CustomerID');
+        console.log('Fetched CustomerID from sessionStorage:', CustomerID);
+
+        if (CustomerID) {
+          try {
+            // 顧客情報の取得
+            const profileApiEndpoint = `https://m3h-hasegawa-recreation3.azurewebsites.net/api/CustomerProfile?CustomerID=${CustomerID}`;
+            const profileResponse = await axios.get(profileApiEndpoint);
+            if (profileResponse.status === 200) {
+              this.name = profileResponse.data.name;
+              this.phone = profileResponse.data.phone;
+              this.email = profileResponse.data.email;
+              this.address = profileResponse.data.address;
+            } else {
+              console.error('Error fetching data:', profileResponse);
+            }
+          } catch (error) {
+            console.error('Error fetching data:', error);
+          }
+        } else {
+          alert('セッションがタイムアウトしました。ログインしなおしてください。');
+          window.location.href = 'index_Login.html';
+        }
+      },
+      methods: {
+        async handleDeactivation() {
+          // 確認ダイアログを表示
+          const confirmed = confirm('本当に退会しますか？退会すると、アカウントとデータは完全に削除されます。');
+
+          if (confirmed) {
+            try {
+              // ユーザーが「OK」をクリックしたときにAPIを呼び出す
+              await this.DeleteCustomer();
+            } catch (error) {
+              console.error('退会処理中にエラーが発生しました:', error);
+              alert('ネットワークエラーが発生しました。');
+            }
+          } else {
+            // ユーザーが「キャンセル」をクリックしたときの処理（省略可）
+            console.log('退会手続きはキャンセルされました。');
+          }
+        },
+        async DeleteCustomer() {
+          const CustomerID = sessionStorage.getItem('CustomerID');
+          if (CustomerID) {
+            try {
+              const apiEndpoint = `https://m3h-hasegawa-recreation3.azurewebsites.net/api/DeleteCustomer?CustomerID=${CustomerID}`;
+              const response = await axios.post(apiEndpoint);
+              if (response.status === 200) {
+                sessionStorage.removeItem('CustomerID');
+                window.location.href = 'index_CancellationSuccess.html'; // ログインページへリダイレクト
+              } else {
+                console.error('退会処理に失敗しました:', response);
+                alert('退会処理中にエラーが発生しました。');
+              }
+            } catch (error) {
+              console.error('退会処理中にエラーが発生しました:', error);
+              alert('ネットワークエラーが発生しました。');
+            }
+          } else {
+            alert('セッションがタイムアウトしました。ログインしなおしてください。');
+            window.location.href = 'index_Login.html';
+          }
+        }
+      }
+    });
+</script>
+</body>
+</html>

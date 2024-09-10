@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+  <title>神社の御祈祷</title>
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+  <style>
+    .main-title {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .content {
+      margin: 20px;
+    }
+    .button-container {
+      text-align: center;
+      margin-top: 30px;
+    }
+    .footer {
+      text-align: center;
+      padding: 20px;
+      background-color: #f5f5f5;
+      margin-top: 40px;
+    }
+    .hero-image {
+      width: 100%;
+      height: 400px;
+      background-image: url('https://example.com/your-image.jpg');
+      background-size: cover;
+      background-position: center;
+      margin-bottom: 20px;
+    }
+    .image-container img {
+      width: 100%;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <v-app>
+      <v-app-bar app color="primary" dark>
+        <v-toolbar-title>神社の御祈祷</v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-btn text href="#overview">御祈祷の概要</v-btn>
+        <v-btn text href="#participation">参加概要</v-btn>
+        <v-btn text href="#reservation">予約</v-btn>
+      </v-app-bar>
+
+      <div class="image-container">
+        <img src="Shrine2.jpg" alt="神社の写真">
+      </div>
+
+      <v-main>
+        <v-container>
+          <div class="hero-image"></div>
+          <v-row>
+            <v-col>
+              <h1 class="main-title">神社の御祈祷</h1>
+              <v-card class="mx-auto" max-width="600">
+                <v-card-title>御祈祷の概要</v-card-title>
+                <v-card-text>
+                  <p>神社では、皆様の健康や幸せを祈るための御祈祷を行っています。御祈祷は、神職が神様に祈りを捧げる儀式であり、特別な祝詞を唱えます。</p>
+                </v-card-text>
+              </v-card>
+
+              <v-card class="mx-auto mt-4" max-width="600">
+                <v-card-title>参加概要</v-card-title>
+                <v-card-text>
+                  <p>御祈祷に参加するには、事前に予約が必要です。以下のリンクから御祈祷予約フォームにアクセスし、必要事項を記入してください。</p>
+                </v-card-text>
+              </v-card>
+
+              <div class="button-container">
+                <v-btn color="primary" href="https://example.com/reservation-form" target="_blank">御祈祷予約フォーム</v-btn>
+              </div>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-main>
+
+      <v-footer app>
+        <v-col class="text-center" cols="12">
+          <span>© 2024 神社の御祈祷</span>
+        </v-col>
+      </v-footer>
+    </v-app>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+
+  <script>
+    new Vue({
+      el: '#app',
+      vuetify: new Vuetify(),
+      data() {
+        return {
+          // データをここに追加
+        };
+      },
+      methods: {
+        // メソッドをここに追加
+      }
+    });
+  </script>
+</body>
+</html>
