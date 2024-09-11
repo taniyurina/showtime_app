@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -32,7 +33,7 @@
       <v-container class="confirmation-container">
         <v-stepper v-model="step" class="mb-5">
           <v-stepper-header>
-            <v-stepper-step :complete="step > 1" step="1">顧客情報確認</v-stepper-step>
+            <v-stepper-step :complete="step > 1" step="1">ご祈祷予約</v-stepper-step>
             <v-divider></v-divider>
             <v-stepper-step :complete="step > 2" step="2" class="v-stepper-step--active">最終確認</v-stepper-step>
             <v-divider></v-divider>
@@ -125,18 +126,18 @@
       methods: {
         async completeOrder() {
           const orderDetails = {
-            CustomerName: this.reservation.name,
-            PhoneNumber: this.reservation.phone,
-            EmailAddress: this.reservation.email,
-            Address: this.reservation.address,
+            CustomerName: this.customer.name,
+            PhoneNumber: this.customer.phone,
+            EmailAddress: this.customer.email,
+            Address: this.customer.address,
             ReservationDate: this.reservation.date,
             ReservationTime: this.reservation.time,
             OrderDate: new Date().toISOString(),
-            Password: this.reservation.password
+            Password: this.customer.password
           };
 
           try {
-            const response = await fetch('.net/api/InsertCustomerOrder', {
+            const response = await fetch('https://m3h-hasegawa-recreation3.azurewebsites.net/api/InsertPrayerReservation', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json'
@@ -146,7 +147,7 @@
 
             if (response.ok) {
               localStorage.clear(); // 注文完了後にローカルストレージをクリア
-              window.location.href = 'index_PurchaseSuccess.html'; // 成功ページにリダイレクト
+              window.location.href = 'index_PrayerReservationSuccess.html'; // 成功ページにリダイレクト
             } else {
               alert('予約に失敗しました。後ほど再試行してください。');
             }
