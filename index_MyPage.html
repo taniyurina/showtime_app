@@ -103,7 +103,7 @@
           <v-col cols="12" md="8">
             <!-- 注文履歴 -->
             <v-card class="mypage-section">
-              <v-card-title>注文履歴</v-card-title>
+              <v-card-title>商品注文履歴</v-card-title>
               <v-card-text>
                 <v-list>
                   <v-list-item v-for="order in orders" :key="order.itemName + order.orderDate">
@@ -112,6 +112,20 @@
                       <v-list-item-subtitle>注文日: {{ order.orderDate }}</v-list-item-subtitle>
                       <v-list-item-subtitle>数量: {{ order.quantity }}</v-list-item-subtitle>
                       <v-list-item-subtitle>価格: {{ order.totalAmount }}円</v-list-item-subtitle>
+                    </v-list-item-content>
+                  </v-list-item>
+                </v-list>
+              </v-card-text>
+            </v-card>
+            <!-- ご祈祷予約履歴 -->
+            <v-card class="mypage-section">
+              <v-card-title>ご祈祷予約履歴</v-card-title>
+              <v-card-text>
+                <v-list>
+                  <v-list-item v-for="reservation in reservations" :key="reservation.reservationId">
+                    <v-list-item-content>
+                      <v-list-item-subtitle>予約日: {{ reservation.reservationDate }}</v-list-item-subtitle>
+                      <v-list-item-subtitle>予約時間: {{ reservation.reservationTime }}</v-list-item-subtitle>
                     </v-list-item-content>
                   </v-list-item>
                 </v-list>
@@ -135,7 +149,8 @@
           phone: '',
           email: '',
           address: '',
-          orders: []
+          orders: [],
+          reservations: []
         };
       },
       async mounted() {
@@ -151,7 +166,7 @@
               this.name = profileResponse.data.name;
               this.phone = profileResponse.data.phone;
               this.email = profileResponse.data.email;
-              this.address = profileResponse.data.addressprofile;
+              this.address = profileResponse.data.address;
             } else {
               console.error('Error fetching data:', profileResponse);
             }
@@ -160,10 +175,20 @@
             const ordersApiEndpoint = `https://m3h-hasegawa-recreation3.azurewebsites.net/api/OrderSELECT?CustomerID=${CustomerID}`;
             const ordersResponse = await axios.get(ordersApiEndpoint);
             if (ordersResponse.status === 200) {
-              this.orders = ordersResponse.data; // 修正
+              this.orders = ordersResponse.data;
             } else {
               console.error('Error fetching orders data:', ordersResponse);
             }
+
+            // ご祈祷予約履歴の取得
+      const reservationsApiEndpoint = `https://m3h-hasegawa-recreation3.azurewebsites.net/api/PrayerReservationSELECT?CustomerID=${CustomerID}`;
+      const reservationsResponse = await axios.get(reservationsApiEndpoint);
+      if (reservationsResponse.status === 200) {
+        this.reservations = reservationsResponse.data;
+      } else {
+        console.error('Error fetching reservations data:', reservationsResponse);
+      }
+
           } catch (error) {
             console.error('Error fetching data:', error);
           }
