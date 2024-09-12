@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>最終確認</title>
+<link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+<style>
+  .confirmation-container {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 20px;
+  }
+  .confirmation-title {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #6200ea;
+  }
+  .confirmation-button {
+    margin-top: 20px;
+  }
+</style>
+</head>
+<body>
+<div id="app">
+<v-app>
+<v-container class="confirmation-container">
+<h1 class="confirmation-title">最終確認</h1>
+<!-- 顧客情報確認 -->
+<v-card class="confirmation-section">
+<v-card-title>顧客情報</v-card-title>
+<v-card-text>
+<v-list>
+<v-list-item>
+<v-list-item-content>
+<v-list-item-title>氏名</v-list-item-title>
+<v-list-item-subtitle>{{ customer.name }}</v-list-item-subtitle>
+</v-list-item-content>
+</v-list-item>
+<v-list-item>
+<v-list-item-content>
+<v-list-item-title>電話番号</v-list-item-title>
+<v-list-item-subtitle>{{ customer.phone }}</v-list-item-subtitle>
+</v-list-item-content>
+</v-list-item>
+<v-list-item>
+<v-list-item-content>
+<v-list-item-title>メールアドレス</v-list-item-title>
+<v-list-item-subtitle>{{ customer.email }}</v-list-item-subtitle>
+</v-list-item-content>
+</v-list-item>
+<v-list-item>
+<v-list-item-content>
+<v-list-item-title>住所</v-list-item-title>
+<v-list-item-subtitle>{{ customer.address }}</v-list-item-subtitle>
+</v-list-item-content>
+</v-list-item>
+<v-list-item>
+<v-list-item-content>
+<v-list-item-title>パスワード</v-list-item-title>
+<v-list-item-subtitle>********</v-list-item-subtitle>
+</v-list-item-content>
+</v-list-item>
+</v-list>
+</v-card-text>
+</v-card>
+
+<!-- 完了ボタン -->
+<v-row class="confirmation-button">
+<v-col cols="12">
+<v-btn color="primary" @click="completeSignUp" large>新規会員登録</v-btn>
+</v-col>
+</v-row>
+</v-container>
+</v-app>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+<script>
+    new Vue({
+      el: '#app',
+      vuetify: new Vuetify(),
+      data() {
+        return {
+          customer: {}
+        };
+      },
+      
+      created() {
+        // データを localStorage から読み込む
+        const customerData = localStorage.getItem('customer');
+        if (customerData) {
+          this.customer = JSON.parse(customerData);
+        }
+      },
+      methods: {
+        async completeSignUp() {
+          const SignUpDetails = {
+            CustomerName: this.customer.name,
+            PhoneNumber: this.customer.phone,
+            EmailAddress: this.customer.email,
+            Address: this.customer.address,
+            Password: this.customer.password
+          };
+ 
+          try {
+            const response = await fetch('https://m3h-hasegawa-recreation3.azurewebsites.net/api/InsertCustomerSignUp', { 
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(SignUpDetails)
+            });
+ 
+            if (response.ok) {
+              localStorage.clear(); // 完了後にローカルストレージをクリア
+              window.location.href = 'index_SignUpResult.html'; // 完了画面へ
+            } else {
+              alert('登録に失敗しました。後ほど再試行してください。');
+            }
+          } catch (error) {
+            console.error('登録処理中にエラーが発生しました:', error);
+            alert('登録に失敗しました。後ほど再試行してください。');
+          }
+        }
+      }
+    });
+</script>
+</body>
+</html>

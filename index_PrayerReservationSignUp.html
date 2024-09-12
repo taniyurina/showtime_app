@@ -1,0 +1,148 @@
+ログイン
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+<title>ログインフォーム</title>
+<link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+<style>
+    [v-cloak] {
+      display: none;
+    }
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
+      font-family: 'Roboto', sans-serif;
+    }
+    .login-form {
+      width: 100%;
+      max-width: 400px;
+      margin: 50px auto;
+      padding: 20px;
+      background-color: #ffffff;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .login-form:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    }
+    .form-title {
+      text-align: center;
+      font-size: 24px;
+      margin-bottom: 20px;
+      color: #6200ea;
+      font-weight: bold;
+    }
+    .member-signup {
+      display: block;
+      margin-top: 15px;
+      text-align: center;
+      color: #007bff;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .member-signup:hover {
+      color: #0056b3;
+      text-decoration: underline;
+    }
+</style>
+</head>
+<body>
+<div id="app" v-cloak>
+<v-app>
+<v-container fluid>
+<v-row justify="center">
+<v-col cols="12" md="6">
+<v-form class="login-form">
+<div class="form-title">ログイン</div>
+<v-text-field
+                label="メールアドレス"
+                v-model="email"
+                prepend-icon="mdi-email"
+                outlined
+                dense
+                required
+></v-text-field>
+<v-text-field
+                label="パスワード"
+                v-model="password"
+                prepend-icon="mdi-lock"
+                type="password"
+                outlined
+                dense
+                required
+></v-text-field>
+<v-btn
+                color="primary"
+                block
+                @click="handleLoginClick"
+>
+                ログイン
+</v-btn>
+<a href="index_SignUp.html" class="member-signup">会員登録はこちら</a>
+</v-form>
+</v-col>
+</v-row>
+</v-container>
+</v-app>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    new Vue({
+      el: '#app',
+      vuetify: new Vuetify(),
+      data() {
+        return {
+          email: '',
+          password: ''
+        };
+      },
+      methods: {
+        async handleLoginClick() {
+          try {
+            const apiEndpoint = 'https://m3h-hasegawa-recreation3.azurewebsites.net/api/Login';
+            const response = await axios.post(apiEndpoint, {
+              EmailAddress: this.email,
+              Password: this.password
+            }, {
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            });
+ 
+            if (response.status === 200) {
+              // Assume the response contains the CustomerID
+              const { customerID } = response.data;
+              console.log('Login API response:', response.data);
+ 
+              // Store the CustomerID in sessionStorage
+              sessionStorage.setItem('CustomerID', customerID);
+ 
+              // Redirect to the mypage
+              window.location.href = 'index_PrayerReservationConfirmationPage.html';
+            }
+          } catch (error) {
+            if (error.response) {
+              if (error.response.status === 401) {
+                alert('メールアドレス または パスワード が一致しません。');
+              } else {
+                alert('ログイン中にエラーが発生しました。');
+              }
+            } else {
+              alert('ネットワークエラーが発生しました。');
+            }
+          }
+        }
+      }
+    });
+</script>
+</body>
+</html>
