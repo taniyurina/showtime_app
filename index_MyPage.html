@@ -53,6 +53,25 @@
       display: block;
       text-align: right;
     }
+    .cancel-all-button {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .cancel-button {
+      text-align: center;
+      margin-top: 10px;
+    }
+    .order-group {
+      margin-bottom: 20px;
+    }
+    .order-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 10px;
+    }
+    .order-item {
+      margin-bottom: 10px;
+    }
   </style>
 </head>
 <body>
@@ -106,14 +125,24 @@
               <v-card-title>商品注文履歴</v-card-title>
               <v-card-text>
                 <v-list>
-                  <v-list-item v-for="order in orders" :key="order.itemName + order.orderDate">
-                    <v-list-item-content>
-                      <v-list-item-title>{{ order.itemName }}</v-list-item-title>
-                      <v-list-item-subtitle>注文日: {{ order.orderDate }}</v-list-item-subtitle>
-                      <v-list-item-subtitle>数量: {{ order.quantity }}</v-list-item-subtitle>
-                      <v-list-item-subtitle>価格: {{ order.totalAmount }}円</v-list-item-subtitle>
-                    </v-list-item-content>
-                  </v-list-item>
+                  <div v-for="(orderGroup, index) in groupedOrders" :key="index" class="order-group">
+                    <v-list-item>
+                      <v-list-item-content>
+                        <v-list-item-title>注文ID: {{ orderGroup.orderID }}</v-list-item-title>
+                        <v-list-item-subtitle>注文日: {{ orderGroup.orderDate }}</v-list-item-subtitle>
+                        <v-list-item-subtitle>合計価格: {{ orderGroup.totalAmount }}円</v-list-item-subtitle>
+                        <v-list-item-subtitle>数量: {{ orderGroup.quantity }}</v-list-item-subtitle>
+                        <div v-for="item in orderGroup.items" :key="item.itemID" class="order-item">
+                          <v-list-item-title>商品名: {{ item.itemName }}</v-list-item-title>
+                          <v-list-item-subtitle>数量: {{ item.quantity }}</v-list-item-subtitle>
+                          <v-list-item-subtitle>価格: {{ item.price }}円</v-list-item-subtitle>
+                        </div>
+                      </v-list-item-content>
+                      <v-list-item-action class="order-actions">
+                        <v-btn color="error" @click="cancelOrder(orderGroup.orderID)" small>この注文をキャンセル</v-btn>
+                      </v-list-item-action>
+                    </v-list-item>
+                  </div>
                 </v-list>
               </v-card-text>
             </v-card>
@@ -153,6 +182,34 @@
           reservations: []
         };
       },
+      computed: {
+        groupedOrders() {
+          const orderMap = new Map();
+
+          this.orders.forEach(order => {
+            if (!orderMap.has(order.orderID)) {
+              orderMap.set(order.orderID, {
+                orderID: order.orderID,
+                orderDate: order.orderDate,
+                totalAmount: 0,
+                quantity: 0,
+                items: []
+              });
+            }
+            const group = orderMap.get(order.orderID);
+            group.totalAmount += order.totalAmount;
+            group.quantity += order.quantity;
+            group.items.push({
+              itemID: order.itemID,
+              itemName: order.itemName,
+              quantity: order.quantity,
+              price: order.price
+            });
+          });
+
+          return Array.from(orderMap.values());
+        }
+      },
       async mounted() {
         const CustomerID = sessionStorage.getItem('CustomerID');
         console.log('Fetched CustomerID from sessionStorage:', CustomerID);
@@ -176,18 +233,19 @@
             const ordersResponse = await axios.get(ordersApiEndpoint);
             if (ordersResponse.status === 200) {
               this.orders = ordersResponse.data;
+              console.log('Orders data:', this.orders);  // Debugging line to check orders data
             } else {
               console.error('Error fetching orders data:', ordersResponse);
             }
 
             // ご祈祷予約履歴の取得
-      const reservationsApiEndpoint = `https://m3h-hasegawa-recreation3.azurewebsites.net/api/PrayerReservationSELECT?CustomerID=${CustomerID}`;
-      const reservationsResponse = await axios.get(reservationsApiEndpoint);
-      if (reservationsResponse.status === 200) {
-        this.reservations = reservationsResponse.data;
-      } else {
-        console.error('Error fetching reservations data:', reservationsResponse);
-      }
+            const reservationsApiEndpoint = `https://m3h-hasegawa-recreation3.azurewebsites.net/api/PrayerReservationSELECT?CustomerID=${CustomerID}`;
+            const reservationsResponse = await axios.get(reservationsApiEndpoint);
+            if (reservationsResponse.status === 200) {
+              this.reservations = reservationsResponse.data;
+            } else {
+              console.error('Error fetching reservations data:', reservationsResponse);
+            }
 
           } catch (error) {
             console.error('Error fetching data:', error);
@@ -199,7 +257,39 @@
       },
       methods: {
         async updateProfile() {
-          window.location.href = 'index_UpdateProfile.html';
+          const CustomerID = sessionStorage.getItem('CustomerID');
+          try {
+            const response = await axios.put(`https://m3h-hasegawa-recreation3.azurewebsites.net/api/UpdateCustomerProfile`, {
+              CustomerID: CustomerID,
+              name: this.name,
+              phone: this.phone,
+              email: this.email,
+              address: this.address
+            });
+            if (response.status === 200) {
+              alert('プロフィールが更新されました。');
+            } else {
+              alert('プロフィールの更新に失敗しました。');
+            }
+          } catch (error) {
+            console.error('Error updating profile:', error);
+          }
+        },
+        async cancelOrder(orderID) {
+          try {
+            const response = await axios.post('https://m3h-hasegawa-recreation3.azurewebsites.net/api/CancelOrder', {
+              orderIDs: [orderID]
+            });
+            if (response.status === 200) {
+              alert('注文がキャンセルされました。');
+              this.orders = this.orders.filter(order => order.orderID !== orderID); // Remove canceled order from list
+            } else {
+              alert('注文のキャンセルに失敗しました。');
+            }
+          } catch (error) {
+            console.error('Error canceling order:', error);
+            alert('注文のキャンセル中にエラーが発生しました。');
+          }
         }
       }
     });
