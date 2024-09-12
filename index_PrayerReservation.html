@@ -52,18 +52,6 @@
             <v-form>
               <v-row>
                 <v-col cols="12" class="form-field">
-                  <v-text-field v-model="name" label="氏名" outlined dense required></v-text-field>
-                </v-col>
-                <v-col cols="12" class="form-field">
-                  <v-text-field v-model="phone" label="電話番号" type="tel" outlined dense required></v-text-field>
-                </v-col>
-                <v-col cols="12" class="form-field">
-                  <v-text-field v-model="email" label="メールアドレス" type="email" outlined dense required></v-text-field>
-                </v-col>
-                <v-col cols="12" class="form-field">
-                  <v-text-field v-model="address" label="住所" outlined dense required></v-text-field>
-                </v-col>
-                <v-col cols="12" class="form-field">
                   <v-menu
                     v-model="menu"
                     :close-on-content-click="false"
@@ -85,21 +73,14 @@
                 <v-col cols="12" class="form-field">
                   <v-select
                     v-model="time"
-                    :items="availableTimes"
+                    :items="availabletimes"
                     label="ご希望の時間"
                     outlined
                     dense
                     required
                   ></v-select>
                 </v-col>
-                <v-col cols="12" class="form-field">
-                  <v-card>
-                    <v-card-title>マイページログイン用パスワード</v-card-title>
-                    <v-card-text>
-                      <v-text-field v-model="password" label="パスワード" type="password" outlined dense required></v-text-field>
-                    </v-card-text>
-                  </v-card>
-                </v-col>
+
               </v-row>
             </v-form>
           </v-card-text>
@@ -107,7 +88,7 @@
 
         <v-row class="reservation-button">
           <v-col cols="12">
-            <v-btn color="primary" @click="goToFinalConfirmationPage" large>最終確認画面へ</v-btn>
+            <v-btn color="primary" @click="goToFinalConfirmationPage" large>確認画面へ</v-btn>
           </v-col>
         </v-row>
       </v-container>
@@ -123,33 +104,23 @@
       data() {
         return {
           step: 1,
-          name: '',
-          phone: '',
-          email: '',
-          address: '',
           date: '',
           time: '',
           menu: false,
-          availableTimes: [
+          availabletimes: [
             '10:00', '11:00', '12:00', 
             '13:00', '14:00', '15:00'
-          ],
-          password: ''
+          ]
         };
       },
       methods: {
         goToFinalConfirmationPage() {
           // Save reservation information to localStorage
           localStorage.setItem('reservationprayer', JSON.stringify({
-            name: this.name,
-            phone: this.phone,
-            email: this.email,
-            address: this.address,
-            date: this.date,
-            time: this.time,
-            password: this.password 
+            ReservationDate: this.date,
+            ReservationTime: this.time
           }));
-          window.location.href = 'index_PrayerReservationConfirmationPage.html'; 
+          window.location.href = 'index_PrayerReservationSignUp.html'; 
         }
       }
     });

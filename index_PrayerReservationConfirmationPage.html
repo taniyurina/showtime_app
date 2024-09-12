@@ -73,19 +73,13 @@
               <v-list-item>
                 <v-list-item-content>
                   <v-list-item-title>予約日</v-list-item-title>
-                  <v-list-item-subtitle>{{ reservation.date }}</v-list-item-subtitle>
+                  <v-list-item-subtitle>{{ reservation.ReservationDate }}</v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
               <v-list-item>
                 <v-list-item-content>
                   <v-list-item-title>予約時間</v-list-item-title>
-                  <v-list-item-subtitle>{{ reservation.time }}</v-list-item-subtitle>
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-content>
-                  <v-list-item-title>パスワード</v-list-item-title>
-                  <v-list-item-subtitle>*********</v-list-item-subtitle> <!-- パスワードは隠して表示 -->
+                  <v-list-item-subtitle>{{ reservation.ReservationTime }}</v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
             </v-list>
@@ -103,6 +97,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script>
     new Vue({
       el: '#app',
@@ -114,25 +109,40 @@
           reservation: {}
         };
       },
-      created() {
-        // データを localStorage から読み込む
+      async created() {
+        // ローカルストレージから予約情報を取得
         const reservationData = localStorage.getItem('reservationprayer');
         if (reservationData) {
           this.reservation = JSON.parse(reservationData);
-          this.customer = this.reservation; // ここで customer データを設定
+        }
+
+        // セッションストレージから顧客IDを取得
+        const CustomerID = sessionStorage.getItem('CustomerID');
+        console.log('Fetched CustomerID from sessionStorage:', CustomerID);
+
+        if (CustomerID) {
+          try {
+            // 顧客情報の取得
+            const profileApiEndpoint = `https://m3h-hasegawa-recreation3.azurewebsites.net/api/CustomerProfile?CustomerID=${CustomerID}`;
+            const profileResponse = await axios.get(profileApiEndpoint);
+            if (profileResponse.status === 200) {
+              this.customer = profileResponse.data; // 顧客情報を設定
+            } else {
+              console.error('Error fetching data:', profileResponse);
+              alert('顧客情報の取得に失敗しました。');
+            }
+          } catch (error) {
+            console.error('Error fetching customer information:', error);
+            alert('顧客情報の取得に失敗しました。');
+          }
         }
       },
       methods: {
         async completeOrder() {
-          const orderDetails = {
-            CustomerName: this.customer.name,
-            PhoneNumber: this.customer.phone,
-            EmailAddress: this.customer.email,
-            Address: this.customer.address,
-            ReservationDate: this.reservation.date,
-            ReservationTime: this.reservation.time,
-            OrderDate: new Date().toISOString(),
-            Password: this.customer.password
+          const reservationData = {
+            CustomerID: sessionStorage.getItem('CustomerID'), 
+            ReservationDate: this.reservation.ReservationDate,
+            ReservationTime: this.reservation.ReservationTime
           };
 
           try {
@@ -141,10 +151,10 @@
               headers: {
                 'Content-Type': 'application/json'
               },
-              body: JSON.stringify(orderDetails)
+              body: JSON.stringify(reservationData)
             });
 
-            if (response.ok) {
+            if (response.status === 200) {
               localStorage.clear(); // 注文完了後にローカルストレージをクリア
               window.location.href = 'index_PrayerReservationSuccess.html'; // 成功ページにリダイレクト
             } else {
