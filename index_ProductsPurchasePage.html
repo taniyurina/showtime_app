@@ -142,7 +142,12 @@
                     <v-card-subtitle>{{ product.price }}円</v-card-subtitle>
                     <v-card-actions>
                       <v-text-field v-model.number="product.quantity" label="数量" type="number" min="1" hide-details></v-text-field>
-                      <v-btn class="order-button" @click="addToCart(product)" rounded>
+                      <v-btn 
+                        class="order-button" 
+                        @click="addToCart(product)" 
+                        :disabled="isQuantityExceedsLimit(product)" 
+                        rounded
+                      >
                         <v-icon>mdi-cart-plus</v-icon> カートに入れる
                       </v-btn>
                     </v-card-actions>
@@ -159,7 +164,7 @@
           
           <v-row class="confirmation-button">
             <v-col cols="12">
-              <v-btn color="primary" @click="goToConfirmationPage" large>顧客情報確認画面へ</v-btn>
+              <v-btn color="primary" @click="goToConfirmationPage" large>お客様情報確認画面へ</v-btn>
             </v-col>
           </v-row>
         </v-container>
@@ -205,19 +210,37 @@
             alert('商品数量は1以上でなければなりません。');
             return;
           }
+
+          // カート内の同じ商品の数量を確認
           const cartItem = this.cart.find(item => item.id === product.id);
           if (cartItem) {
+            if (cartItem.quantity + product.quantity > 5) {
+              alert('同じ商品をカートに5個以上追加することはできません。');
+              return;
+            }
             cartItem.quantity += product.quantity;
           } else {
+            if (product.quantity > 5) {
+              alert('同じ商品をカートに5個以上追加することはできません。');
+              return;
+            }
             this.cart.push({ ...product });
           }
           alert(`${product.name}が${product.quantity}個カートに入りました！`);
         },
         goToConfirmationPage() {
+          // カート内の商品数量チェック
+          const hasMoreThanFive = this.cart.some(item => item.quantity > 5);
+          if (hasMoreThanFive) {
+            alert('同じ商品が5個以上カートに入っているため、顧客情報確認画面に遷移できません。');
+            return;
+          }
+
           if (this.cart.length === 0) {
             alert('カートに商品がありません。商品を1つ以上選択してください。');
             return;
           }
+
           localStorage.setItem('cart', JSON.stringify(this.cart));
           window.location.href = 'index_2.html';
         },
@@ -230,9 +253,17 @@
         showImage(imageSrc) {
           this.selectedImage = imageSrc;
           this.imageDialog = true;
+        },
+        isQuantityExceedsLimit(product) {
+          // カート内の同じ商品の数量合計が5個以上かどうかをチェック
+          const cartItem = this.cart.find(item => item.id === product.id);
+          return cartItem ? (cartItem.quantity + product.quantity) > 5 : false;
         }
       }
     });
   </script>
 </body>
 </html>
+
+
+

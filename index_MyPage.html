@@ -31,9 +31,6 @@
     .mypage-section {
       margin-bottom: 20px;
     }
-    .form-field {
-      margin-bottom: 10px;
-    }
     .profile-picture {
       display: flex;
       justify-content: center;
@@ -92,22 +89,10 @@
             <v-card class="mypage-section">
               <v-card-title>個人情報</v-card-title>
               <v-card-text>
-                <v-form>
-                  <v-row>
-                    <v-col cols="12" class="form-field">
-                      <v-text-field v-model="name" label="氏名" outlined dense></v-text-field>
-                    </v-col>
-                    <v-col cols="12" class="form-field">
-                      <v-text-field v-model="phone" label="電話番号" outlined dense></v-text-field>
-                    </v-col>
-                    <v-col cols="12" class="form-field">
-                      <v-text-field v-model="email" label="メールアドレス" outlined dense></v-text-field>
-                    </v-col>
-                    <v-col cols="12" class="form-field">
-                      <v-text-field v-model="address" label="住所" outlined dense></v-text-field>
-                    </v-col>
-                  </v-row>
-                </v-form>
+                <p><strong>氏名:</strong> {{ name }}</p>
+                <p><strong>電話番号:</strong> {{ phone }}</p>
+                <p><strong>メールアドレス:</strong> {{ email }}</p>
+                <p><strong>住所:</strong> {{ address }}</p>
                 <v-row>
                   <v-col cols="12" class="update-button">
                     <v-btn color="primary" @click="updateProfile" large>更新する</v-btn>
@@ -258,22 +243,7 @@
       methods: {
         async updateProfile() {
           const CustomerID = sessionStorage.getItem('CustomerID');
-          try {
-            const response = await axios.put(`https://m3h-hasegawa-recreation3.azurewebsites.net/api/UpdateCustomerProfile`, {
-              CustomerID: CustomerID,
-              name: this.name,
-              phone: this.phone,
-              email: this.email,
-              address: this.address
-            });
-            if (response.status === 200) {
-              alert('プロフィールが更新されました。');
-            } else {
-              alert('プロフィールの更新に失敗しました。');
-            }
-          } catch (error) {
-            console.error('Error updating profile:', error);
-          }
+          window.location.href='index_UpdateProfile.html';
         },
         async cancelOrder(orderID) {
           try {
