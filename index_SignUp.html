@@ -90,17 +90,78 @@
           <v-card-text>
             <v-form>
               <v-row>
-                <v-col cols="12" class="form-field">
-                  <v-text-field v-model="name" label="氏名" outlined dense required></v-text-field>
+                <!-- 姓の入力欄 -->
+                <v-col cols="6" class="form-field">
+                  <label for="lastName">姓</label>
+                  <v-text-field
+                    v-model="lastName"
+                    outlined
+                    dense
+                    required
+                    id="lastName"
+                    @input="convertToHalfWidth('lastName')"
+                  ></v-text-field>
                 </v-col>
-                <v-col cols="12" class="form-field">
-                  <v-text-field v-model="phone" label="電話番号" outlined dense required></v-text-field>
+                <!-- 名の入力欄 -->
+                <v-col cols="6" class="form-field">
+                  <label for="firstName">名</label>
+                  <v-text-field
+                    v-model="firstName"
+                    outlined
+                    dense
+                    required
+                    id="firstName"
+                    @input="convertToHalfWidth('firstName')"
+                  ></v-text-field>
                 </v-col>
+                <!-- 携帯電話番号入力欄 -->
                 <v-col cols="12" class="form-field">
-                  <v-text-field v-model="email" label="メールアドレス" outlined dense required></v-text-field>
+                  <label for="phone">携帯電話番号</label>
+                  <v-text-field
+                    v-model="phone"
+                    outlined
+                    dense
+                    required
+                    :rules="[phoneValidation]"
+                    maxlength="11"
+                    id="phone"
+                    @input="convertToHalfWidth('phone')"
+                  ></v-text-field>
                 </v-col>
+                <!-- メールアドレス入力欄 -->
                 <v-col cols="12" class="form-field">
-                  <v-text-field v-model="address" label="住所" outlined dense required></v-text-field>
+                  <label for="email">メールアドレス</label>
+                  <v-text-field
+                    v-model="emailLocalPart"
+                    outlined
+                    dense
+                    required
+                    id="emailLocalPart"
+                    @input="convertToHalfWidthAndRestrict('emailLocalPart')"
+                  ></v-text-field>
+                  <span>@</span>
+                  <v-combobox
+                    v-model="emailDomain"
+                    :items="domainOptions"
+                    outlined
+                    dense
+                    required
+                    class="email-domain-combobox"
+                    id="emailDomain"
+                    @input="convertToHalfWidthAndRestrict('emailDomain')"
+                  ></v-combobox>
+                </v-col>
+                <!-- 住所の入力欄 -->
+                <v-col cols="12" class="form-field">
+                  <label for="address">住所</label>
+                  <v-text-field
+                    v-model="address"
+                    outlined
+                    dense
+                    required
+                    id="address"
+                    @input="convertToHalfWidth('address')"
+                  ></v-text-field>
                 </v-col>
               </v-row>
             </v-form>
@@ -114,17 +175,39 @@
             <v-form>
               <v-row>
                 <v-col cols="12" class="form-field">
-                  <v-text-field v-model="password" label="パスワード" type="password" outlined dense required></v-text-field>
+                  <label for="password">パスワード</label>
+                  <v-text-field
+                    v-model="password"
+                    type="password"
+                    outlined
+                    dense
+                    required
+                    id="password"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" class="form-field">
+                  <label for="passwordConfirm">パスワード（確認）</label>
+                  <v-text-field
+                    v-model="passwordConfirm"
+                    type="password"
+                    outlined
+                    dense
+                    required
+                    id="passwordConfirm"
+                    :error-messages="passwordMatchError"
+                  ></v-text-field>
                 </v-col>
               </v-row>
             </v-form>
           </v-card-text>
         </v-card>
-        
+
         <!-- 次へボタン -->
         <v-row class="confirmation-button">
           <v-col cols="12">
-            <v-btn color="primary" @click="goToFinalConfirmationPage" large>最終確認画面へ</v-btn>
+            <v-btn :disabled="!isFormValid" color="primary" @click="goToFinalConfirmationPage" large>
+              最終確認画面へ
+            </v-btn>
           </v-col>
         </v-row>
       </v-container>
@@ -139,27 +222,93 @@
       vuetify: new Vuetify(),
       data() {
         return {
-          name: '',
+          lastName: '', // 姓
+          firstName: '', // 名
           phone: '',
-          email: '',
+          emailLocalPart: '', // メールアドレスのローカル部
+          emailDomain: '', // メールアドレスのドメイン部
           address: '',
-          password: ''
+          password: '', // パスワード
+          passwordConfirm: '', // パスワード確認用
+          phoneValidation: v => v.length === 11 || '携帯電話番号は11桁で入力してください。',
+          domainOptions: [
+            'docomo.co.jp', 'ezweb.ne.jp', 'i.softbank.jp', 'gmail.com', 'yahoo.co.jp', 'outlook.jp', 'icloud.com'
+          ],
+          passwordMatchError: '' // パスワード不一致時のエラーメッセージ
         };
+      },
+      computed: {
+        isPhoneValid() {
+          return this.phone.length === 11;
+        },
+        isPasswordMatch() {
+          return this.password === this.passwordConfirm;
+        },
+        isFormValid() {
+          return this.isPhoneValid &&
+            this.isPasswordMatch && // パスワードの一致を確認
+            this.lastName &&
+            this.firstName &&
+            this.emailLocalPart &&
+            this.emailDomain &&
+            this.address &&
+            this.password;
+        }
       },
       methods: {
         goToFinalConfirmationPage() {
-          // Save customer information to localStorage
+          if (!this.isPasswordMatch) {
+            this.passwordMatchError = 'パスワードが一致しません';
+            return;
+          }
+          
+          // メールアドレスのローカル部とドメイン部を結合
+          const fullEmail = `${this.emailLocalPart}@${this.emailDomain}`;
+
+          // 顧客情報をlocalStorageに保存
           localStorage.setItem('customer', JSON.stringify({
-            name: this.name,
+            name: `${this.lastName}${this.firstName}`,
             phone: this.phone,
-            email: this.email,
+            email: fullEmail,
             address: this.address,
             password: this.password 
           }));
           window.location.href = 'index_SignUpFinalConfirmationPage.html';
+        },
+        convertToHalfWidth(field) {
+          // 全角文字を半角に変換
+          this[field] = this[field].replace(/[Ａ-Ｚａ-ｚ０-９]/g, s =>
+            String.fromCharCode(s.charCodeAt(0) - 0xFEE0)
+          );
+        },
+        convertToHalfWidthAndRestrict(field) {
+          // 全角文字を半角に変換し、半角英数字と記号だけを許可
+          const validChars = /[^a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]/g;
+          this[field] = this[field]
+            .replace(/[Ａ-Ｚａ-ｚ０-９]/g, s => String.fromCharCode(s.charCodeAt(0) - 0xFEE0))
+            .replace(validChars, ''); // 不正な文字を削除
         }
       }
     });
   </script>
+  <style>
+    /* 各フォームフィールドのスタイル調整 */
+    .confirmation-container {
+      max-width: 600px;
+      margin: auto;
+    }
+    .form-field {
+      margin-bottom: 8px; /* 各項目の間隔を調整 */
+    }
+    .email-domain-combobox {
+      width: auto; /* コンボボックスの幅を調整 */
+      display: inline-block; /* テキストフィールドと同じ行に配置 */
+    }
+    /* コンボボックスの四角いボックススタイル */
+    .v-combobox .v-input__control,
+    .v-combobox .v-input__slot {
+      border-radius: 0 !important; /* 角を四角にする */
+    }
+  </style>
 </body>
 </html>
