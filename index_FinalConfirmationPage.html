@@ -6,7 +6,6 @@
     <title>最終確認</title>
     <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
     <style>
-        /* スタイルは以前のものと同じ */
         .confirmation-container {
             margin: 20px auto;
             max-width: 1200px;
@@ -32,7 +31,7 @@
             <v-container class="confirmation-container">
                 <v-stepper v-model="step" class="mb-5">
                     <v-stepper-header>
-                        <v-stepper-step :complete="step > 1" step="1">顧客情報確認</v-stepper-step>
+                        <v-stepper-step :complete="step > 1" step="1">商品選択</v-stepper-step>
                         <v-divider></v-divider>
                         <v-stepper-step :complete="step > 2" step="2" class="v-stepper-step--active">最終確認</v-stepper-step>
                         <v-divider></v-divider>
@@ -40,6 +39,8 @@
                     </v-stepper-header>
                 </v-stepper>
                 <h1 class="confirmation-title">最終確認</h1>
+
+                <!-- 顧客情報の確認 -->
                 <v-card class="confirmation-section">
                     <v-card-title>顧客情報</v-card-title>
                     <v-card-text>
@@ -71,11 +72,13 @@
                         </v-list>
                     </v-card-text>
                 </v-card>
+
+                <!-- カート情報の確認 -->
                 <v-card class="confirmation-section">
                     <v-card-title>選択商品確認</v-card-title>
                     <v-card-text>
                         <v-list>
-                            <v-list-item v-for="item in cart" :key="item.id">
+                            <v-list-item v-for="item in cart" :key="item.name">
                                 <v-list-item-content>
                                     <v-list-item-title>{{ item.name }}</v-list-item-title>
                                     <v-list-item-subtitle>数量: {{ item.quantity }}</v-list-item-subtitle>
@@ -92,6 +95,8 @@
                         </v-list-item>
                     </v-card-text>
                 </v-card>
+
+                <!-- 注文確定ボタン -->
                 <v-row class="confirmation-button">
                     <v-col cols="12">
                         <v-btn color="primary" @click="completeOrder" large>注文を確定する</v-btn>
@@ -103,6 +108,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
         new Vue({
             el: '#app',
@@ -136,6 +142,11 @@
                         const cartData = localStorage.getItem('cart');
                         if (cartData) {
                             this.cart = JSON.parse(cartData);
+                           
+                            console.log('Cart Data:', this.cart); // カートデータをコンソールに表示
+                        } else {
+                            alert('カートが空です。');
+                            window.location.href = 'index_Shopping.html'; // カートページにリダイレクト
                         }
                     } else {
                         alert('セッションがタイムアウトしました。ログインしなおしてください。');
@@ -146,39 +157,45 @@
                 }
             },
             methods: {
-                async completeOrder() {
-                    const orderDetails = {
-                        CustomerName: this.customer.name,
-                        PhoneNumber: this.customer.phone,
-                        EmailAddress: this.customer.email,
-                        Address: this.customer.address,
-                        OrderDate: new Date().toISOString(),
-                        TotalAmount: this.totalPrice,
-                        ItemName: this.cart.map(item => item.name),
-                        Quantity: this.cart.map(item => item.quantity.toString())
-                    };
+    async completeOrder() {
+        
+        const orderDetails = {
+            CustomerID: sessionStorage.getItem('CustomerID'),
+            OrderDate: new Date().toISOString(),
+            TotalAmount: this.totalPrice,
+            ItemName: this.cart.map(item => item.name),
+            Quantity: this.cart.map(item => item.quantity.toString())
 
-                    try {
-                        const response = await fetch('https://m3h-hasegawa-recreation3.azurewebsites.net/api/InserOrder', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify(orderDetails)
-                        });
+        };
 
-                        if (response.ok) {
-                            localStorage.clear(); // 注文完了後にローカルストレージをクリア
-                            window.location.href = 'index_PurchaseSuccess.html'; // ホームページにリダイレクト
-                        } else {
-                            alert('注文に失敗しました。後ほど再試行してください。');
-                        }
-                    } catch (error) {
-                        console.error('注文処理中にエラーが発生しました:', error);
-                        alert('注文に失敗しました。後ほど再試行してください。');
-                    }
-                }
+        console.log('Order Details:', orderDetails);
+
+        try {
+            const response = await fetch('https://m3h-hasegawa-recreation3.azurewebsites.net/api/InsertOrder', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(orderDetails)
+            });
+
+            if (response.ok) {
+                localStorage.clear(); // 注文完了後にローカルストレージをクリア
+                window.location.href = 'index_OrderSuccess.html'; // 成功ページにリダイレクト
+            } else {
+                // サーバーからのエラーメッセージを表示
+                const errorData = await response.json();
+                console.error('Server Error:', errorData); // エラーメッセージをコンソールに表示
+                alert(`注文に失敗しました: ${errorData.message}`);
             }
+        } catch (error) {
+            console.error('Error completing order:', error);
+            alert('注文処理中にエラーが発生しました。後ほど再試行してください。');
+        }
+    }
+}
+
+
         });
     </script>
 </body>
