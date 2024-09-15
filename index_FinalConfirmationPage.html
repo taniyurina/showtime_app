@@ -157,16 +157,14 @@
                 }
             },
             methods: {
-    async completeOrder() {
-        
-        const orderDetails = {
-            CustomerID: sessionStorage.getItem('CustomerID'),
-            OrderDate: new Date().toISOString(),
-            TotalAmount: this.totalPrice,
-            ItemName: this.cart.map(item => item.name),
-            Quantity: this.cart.map(item => item.quantity.toString())
-
-        };
+                async completeOrder() {
+                    const orderDetails = {
+    CustomerID: sessionStorage.getItem('CustomerID'),
+    OrderDate: new Date().toISOString(),
+    TotalAmount: this.totalPrice,
+    ItemName: this.cart.map(item => item.name),
+    Quantity: this.cart.map(item => item.quantity.toString())
+};
 
         console.log('Order Details:', orderDetails);
 
@@ -181,7 +179,7 @@
 
             if (response.ok) {
                 localStorage.clear(); // 注文完了後にローカルストレージをクリア
-                window.location.href = 'index_OrderSuccess.html'; // 成功ページにリダイレクト
+                window.location.href = 'index_PurchaseSuccess.html'; // 成功ページにリダイレクト
             } else {
                 // サーバーからのエラーメッセージを表示
                 const errorData = await response.json();
