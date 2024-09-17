@@ -5,42 +5,133 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
   <title>神社のご祈祷</title>
   <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> <!-- Font Awesome -->
   <style>
+    body {
+      background-color: #e8f5e9; /* 軽い緑色の背景 */
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
     .main-title {
       text-align: center;
+      margin-top: 150px; /* タイトルの上部余白を増やす */
+      font-size: 48px;
+      font-weight: bold;
+      color: #004d40; /* 濃い緑 */
+      text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+    }
+    .main-title.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .section-title {
+      font-size: 32px;
+      font-weight: bold;
       margin-top: 20px;
+      color: #004d40; /* 濃い緑 */
+      border-bottom: 3px solid #004d40;
+      padding-bottom: 10px;
     }
     .content {
-      margin: 20px;
+      background-color: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+      padding: 30px;
+      max-width: 900px;
+      margin: 0 auto 80px auto;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+      scroll-margin-top: 80px;
     }
-    .button-container {
-      text-align: center;
-      margin-top: 30px;
+    .content.visible {
+      opacity: 1;
+      transform: translateY(0);
     }
-    .footer {
-      text-align: center;
-      padding: 20px;
-      background-color: #f5f5f5;
-      margin-top: 40px;
-    }
-    .hero-image {
+    .image-container {
       width: 100%;
-      height: 400px;
-      background-image: url('https://example.com/your-image.jpg');
-      background-size: cover;
-      background-position: center;
-      margin-bottom: 20px;
+      text-align: center;
+      margin: 0;
+      padding: 0;
     }
     .image-container img {
       width: 100%;
       height: auto;
+      display: block;
+      border-radius: 16px;
+      border: 6px solid #004d40;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+    .hero-image {
+      width: 100%;
+      height: 500px;
+      background-image: url('https://example.com/your-image.jpg');
+      background-size: cover;
+      background-position: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      opacity: 0;
+      transform: scale(1.1);
+      transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+    }
+    .hero-image.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .button-container {
+      text-align: center;
+      margin-top: 40px;
+    }
+    .v-btn {
+      margin: 10px; /* ボタン間のスペース */
+    }
+    .v-footer {
+      background-color: #004d40; /* 濃い緑 */
+      color: white;
+      padding: 30px;
+      text-align: center;
+      border-top: 6px solid #00332a;
+    }
+    .reservation-btn {
+      display: block;
+      width: 100%;
+      text-align: center;
+      margin-top: 30px;
+    }
+    .back-to-home {
+      position: fixed; /* 固定位置に変更 */
+      top: 120px; /* タイトル下に配置するために調整 */
+      left: 20px;
+      z-index: 1000;
+      background-color: #004d40; /* 濃い緑 */
+      color: white;
+      padding: 10px;
+      border-radius: 50%;
+      font-size: 24px;
+      text-align: center;
+      line-height: 1;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      transition: background-color 0.3s;
+    }
+    .back-to-home:hover {
+      background-color: #00332a; /* ダークグリーン */
+    }
+    .back-to-home i {
+      margin: 0;
     }
   </style>
 </head>
 <body>
   <div id="app">
     <v-app>
-      <v-app-bar app color="primary" dark>
+      <v-app-bar app color="green darken-4" dark>
         <v-toolbar-title>神社のご祈祷</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn text href="#overview">ご祈祷の概要</v-btn>
@@ -48,37 +139,70 @@
         <v-btn text href="index_PrayerReservation.html">予約</v-btn>
       </v-app-bar>
 
-      <div class="image-container">
-        <img src="Shrine2.jpg" alt="神社の写真">
-      </div>
+      <a href="index_HomePage.html" class="back-to-home"><i class="fas fa-home"></i></a> <!-- トップページに戻るアイコン -->
+
+      <div class="hero-image"></div> <!-- Fixed hero image -->
 
       <v-main>
-        <v-container>
-          <div class="hero-image"></div>
-          <v-row>
-            <v-col>
-              <h1 class="main-title">神社のご祈祷</h1>
-              <v-card class="mx-auto" max-width="600">
-                <v-card-title>ご祈祷の概要</v-card-title>
-                <v-card-text>
-                  <p>神社では、皆様の健康や幸せを祈るためのご祈祷を行っています。ご祈祷は、神職が神様に祈りを捧げる儀式であり、特別な祝詞を唱えます。</p>
-                </v-card-text>
-              </v-card>
+        <v-container style="padding: 0;">
+          <div class="image-container">
+            <img src="pray1.jpg" alt="神社の写真">
+          </div>
 
-              <v-card class="mx-auto mt-4" max-width="600">
-                <v-card-title>参加概要</v-card-title>
-                <v-card-text>
-                  <p>ご祈祷に参加するには、事前に予約が必要です。以下のリンクから予約フォームにアクセスしてください。</p>
-                  <p>※予約には会員登録が必要となります。
-                  <br>まだ会員でない方は<a href="index_SignUp.html" class="member-signup">こちら</a>から会員登録をお願いします。</p>
-                </v-card-text>
-              </v-card>
+          <h1 class="main-title">神社のご祈祷</h1>
 
-              <div class="button-container">
-                <v-btn color="primary" href="index_PrayerReservation.html" target="_blank">御祈祷予約フォーム</v-btn>
-              </div>
-            </v-col>
-          </v-row>
+          <!-- コラムセクション -->
+          <v-container>
+            <v-row>
+              <v-col cols="12" md="6">
+                <v-card class="pa-4" elevation="12">
+                  <v-card-title class="text-h5 font-weight-bold">ご祈祷の歴史</v-card-title>
+                  <v-card-subtitle class="text-h6">ご祈祷の起源と日本の伝統</v-card-subtitle>
+                  <v-card-text>
+                    ご祈祷の歴史は古代日本にまでさかのぼり、神道の儀式の中心的な役割を果たしてきました。日本の神社では、平安時代から鎌倉時代にかけて、武士や貴族、一般の人々が神に祈りを捧げる儀式として、祈祷が広まりました。時代を経るごとに、様々な儀式や方法が加わり、現在に至っています。
+                  </v-card-text>
+                </v-card>
+              </v-col>
+              <v-col cols="12" md="6">
+                <v-card class="pa-4" elevation="12">
+                  <v-card-title class="text-h5 font-weight-bold">ご祈祷の種類と目的</v-card-title>
+                  <v-card-subtitle class="text-h6">さまざまなご祈祷の種類</v-card-subtitle>
+                  <v-card-text>
+                    神社で行われるご祈祷には、健康祈願、商売繁盛、学業成就、家内安全など、様々な種類があります。例えば、健康祈願は病気や怪我の予防、または健康を願うための祈祷です。商売繁盛は事業の成功を祈るもので、特に新年に行われることが多いです。それぞれの祈祷が持つ目的とその意味について深く理解することが重要です。
+                  </v-card-text>
+                </v-card>
+              </v-col>
+              <v-col cols="12" md="6">
+                <v-card class="pa-4" elevation="12">
+                  <v-card-title class="text-h5 font-weight-bold">ご祈祷の流れと準備</v-card-title>
+                  <v-card-subtitle class="text-h6">当日の準備と流れ</v-card-subtitle>
+                  <v-card-text>
+                    ご祈祷に参加する際は、事前に予約を行い、当日は指定の時間に神社に到着することが求められます。服装は、カジュアルすぎないものが望ましく、特に重要なのは心を込めて祈る姿勢です。受付で祈祷料を納め、神職の指示に従って儀式に臨みます。ご祈祷が終わると、お札やお守りを受け取ることができます。
+                  </v-card-text>
+                </v-card>
+              </v-col>
+              <v-col cols="12" md="6">
+                <v-card class="pa-4" elevation="12">
+                  <v-card-title class="text-h5 font-weight-bold">ご祈祷の効果と体験談</v-card-title>
+                  <v-card-subtitle class="text-h6">実際の体験談と効果</v-card-subtitle>
+                  <v-card-text>
+                    多くの方がご祈祷を受けた後、心の平安や生活の改善を実感しています。例えば、仕事の悩みや家庭内の問題が解決したという声や、健康が回復したという体験談が寄せられています。ご祈祷を受けることで、精神的な支えや前向きなエネルギーを得ることができ、日々の生活にポジティブな影響を与えることが期待されます。
+                  </v-card-text>
+                </v-card>
+              </v-col>
+            </v-row>
+          </v-container>
+
+          <!-- 予約セクション -->
+          <div class="content" id="participation">
+            <h2 class="section-title">参加概要</h2>
+            <p>ご祈祷に参加するには、事前に予約が必要です。以下のリンクから予約フォームにアクセスしてください。</p>
+            <p>※予約には会員登録が必要となります。<br>まだ会員でない方は<a href="index_SignUp.html" class="member-signup">こちら</a>から会員登録をお願いします。</p>
+            <!-- 予約ボタンをカード内に追加 -->
+            <div class="reservation-btn">
+              <v-btn color="primary" href="index_PrayerReservation.html" target="_blank">御祈祷予約フォーム</v-btn>
+            </div>
+          </div>
         </v-container>
       </v-main>
 
@@ -97,13 +221,35 @@
     new Vue({
       el: '#app',
       vuetify: new Vuetify(),
-      data() {
-        return {
-          // データをここに追加
-        };
+      mounted() {
+        this.observeElements();
+        this.fadeInHeroImage();
       },
       methods: {
-        // メソッドをここに追加
+        observeElements() {
+          const elements = document.querySelectorAll('.content, .main-title');
+
+          const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+              }
+            });
+          }, {
+            threshold: 0.1
+          });
+
+          elements.forEach(element => {
+            observer.observe(element);
+          });
+        },
+        fadeInHeroImage() {
+          const heroImage = document.querySelector('.hero-image');
+          if (heroImage) {
+            heroImage.classList.add('visible');
+          }
+        }
       }
     });
   </script>
