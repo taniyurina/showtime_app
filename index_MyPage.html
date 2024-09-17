@@ -30,7 +30,12 @@
     }
     .mypage-section {
       margin-bottom: 20px;
+      font-size: 20px;
     }
+    .personal-info {
+     font-size: 15px; 
+     }
+
     .profile-picture {
       display: flex;
       justify-content: center;
@@ -60,15 +65,59 @@
     }
     .order-group {
       margin-bottom: 20px;
+      padding: 10px; 
+      border: 1px solid #e0e0e0; 
+      border-radius: 5px; 
+      background-color: #ffffff; 
+
+      display: flex;
+      flex-direction: column; 
     }
     .order-actions {
       display: flex;
       justify-content: flex-end;
       margin-top: 10px;
+
+      margin-top: auto; 
     }
     .order-item {
       margin-bottom: 10px;
     }
+    .order-id {
+    font-size: 15px; 
+  }
+  .order-date {
+    font-size: 15px; 
+  }
+  .total-price {
+    font-size: 15px; 
+  }
+  .order-quantity {
+    font-size: 15px; 
+  }
+  .item-name {
+    font-size: 14px; 
+  }
+  .item-quantity {
+    font-size: 14px; 
+  }
+  .spacer {
+    height: 20px;
+  } 
+  .reservation-group {
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid #e0e0e0; 
+  border-radius: 5px; 
+  background-color: #ffffff; 
+ }
+  .reservation-date {
+    font-size: 15px; 
+  }
+  .reservation-time {
+    font-size: 15px;
+  }
+  
   </style>
 </head>
 <body>
@@ -89,10 +138,12 @@
             <v-card class="mypage-section">
               <v-card-title>個人情報</v-card-title>
               <v-card-text>
+                <div class="personal-info">
                 <p><strong>氏名:</strong> {{ name }}</p>
                 <p><strong>電話番号:</strong> {{ phone }}</p>
                 <p><strong>メールアドレス:</strong> {{ email }}</p>
                 <p><strong>住所:</strong> {{ address }}</p>
+               </div>
                 <v-row>
                   <v-col cols="12" class="update-button">
                     <v-btn color="primary" @click="updateProfile" large>更新する</v-btn>
@@ -113,14 +164,15 @@
                   <div v-for="(orderGroup, index) in groupedOrders" :key="index" class="order-group">
                     <v-list-item>
                       <v-list-item-content>
-                        <v-list-item-title>注文ID: {{ orderGroup.orderID }}</v-list-item-title>
-                        <v-list-item-subtitle>注文日: {{ orderGroup.orderDate }}</v-list-item-subtitle>
-                        <v-list-item-subtitle>合計価格: {{ orderGroup.totalAmount }}円</v-list-item-subtitle>
-                        <v-list-item-subtitle>数量: {{ orderGroup.quantity }}</v-list-item-subtitle>
+                        <v-list-item-title class="order-id">注文ID: {{ orderGroup.orderID }}</v-list-item-title>
+                        <v-list-item-subtitle  class="order-date">注文日: {{ formatDate(orderGroup.orderDate) }}</v-list-item-subtitle>
+                        <v-list-item-subtitle class="total-price">合計価格: {{ orderGroup.totalAmount }}円</v-list-item-subtitle>
+                        <v-list-item-subtitle class="order-quantity">数量: {{ orderGroup.quantity }}</v-list-item-subtitle>
+                        <div class="spacer"></div>
                         <div v-for="item in orderGroup.items" :key="item.itemID" class="order-item">
-                          <v-list-item-title>商品名: {{ item.itemName }}</v-list-item-title>
-                          <v-list-item-subtitle>数量: {{ item.quantity }}</v-list-item-subtitle>
-                          <v-list-item-subtitle>価格: {{ item.price }}円</v-list-item-subtitle>
+                          <v-list-item-title class="item-name">商品名: {{ item.itemName }}</v-list-item-title>
+                          <v-list-item-subtitle class="item-quantity">数量: {{ item.quantity }}</v-list-item-subtitle>
+                          <v-list-item-subtitle v-if="item.price > 0" class="item-price">価格: {{ item.price }}円</v-list-item-subtitle>
                         </div>
                       </v-list-item-content>
                       <v-list-item-action class="order-actions">
@@ -136,10 +188,10 @@
               <v-card-title>ご祈祷予約履歴</v-card-title>
               <v-card-text>
                 <v-list>
-                  <v-list-item v-for="reservation in reservations" :key="reservation.reservationId">
+                  <v-list-item v-for="reservation in reservations" :key="reservation.reservationId"  class="reservation-group">
                     <v-list-item-content>
-                      <v-list-item-subtitle>予約日: {{ reservation.reservationDate }}</v-list-item-subtitle>
-                      <v-list-item-subtitle>予約時間: {{ reservation.reservationTime }}</v-list-item-subtitle>
+                      <v-list-item-subtitle class="reservation-date">予約日: {{ reservation.reservationDate }}</v-list-item-subtitle>
+                      <v-list-item-subtitle class="reservation-time">予約時間: {{ reservation.reservationTime }}</v-list-item-subtitle>
                     </v-list-item-content>
                   </v-list-item>
                 </v-list>
@@ -260,7 +312,12 @@
             console.error('Error canceling order:', error);
             alert('注文のキャンセル中にエラーが発生しました。');
           }
-        }
+        },
+        formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('ja-JP') + ' ' + date.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
+  }
+
       }
     });
   </script>
