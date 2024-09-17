@@ -45,8 +45,8 @@
       opacity: 0;
       transform: translateY(20px);
       transition: opacity 1s ease-in-out, transform 1s ease-in-out;
-      margin: 0 auto 80px auto; /* セクション間のスペースを80pxに設定 */
-      scroll-margin-top: 80px; /* ヘッダーの高さに合わせて調整 */
+      margin: 0 auto 80px auto;
+      scroll-margin-top: 80px;
     }
     .content.visible {
       opacity: 1;
@@ -71,7 +71,7 @@
       background-image: url('https://example.com/your-image.jpg');
       background-size: cover;
       background-position: center;
-      position: fixed; /* Fixed position */
+      position: fixed;
       top: 0;
       left: 0;
       z-index: -1;
@@ -113,6 +113,48 @@
     .v-btn {
       margin: 5px; /* ボタン間のスペース */
     }
+    .signup-btn, .mypage-btn {
+      color: #ffffff;
+      font-weight: bold;
+      margin-left: 10px;
+    }
+    .v-footer .signup-btn, .v-footer .mypage-btn {
+      color: #0288d1;
+    }
+
+    /* 新しいお知らせ欄のスタイル */
+    .announcement {
+      background-color: #ffffff; /* 背景色 */
+      border-radius: 8px; /* 角を丸くする */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 軽い影を追加 */
+      padding: 20px; /* 内側の余白 */
+      margin: 20px 0; /* 上下の余白 */
+      border-left: 4px solid #0288d1; /* 左側のボーダーで強調 */
+    }
+
+    .announcement h2 {
+      font-size: 24px; /* 見出しのフォントサイズ */
+      margin-bottom: 15px; /* 見出しとリンクの間隔 */
+      color: #0288d1; /* 見出しの色 */
+      border-bottom: 2px solid #0288d1; /* 下にラインを追加 */
+      padding-bottom: 10px; /* 下の余白 */
+    }
+
+    .announcement-link {
+      display: block; /* リンクをブロック要素にして改行 */
+      margin-bottom: 10px; /* リンク間にスペースを追加 */
+      color: #1a73e8; /* リンクの色 */
+      text-decoration: none; /* 下線を削除 */
+      transition: color 0.3s ease, background-color 0.3s ease; /* 色の変化にアニメーション */
+      padding: 10px; /* リンクの内側余白 */
+      border-radius: 4px; /* リンクの角を丸くする */
+    }
+
+    .announcement-link:hover {
+      color: #0288d1; /* ホバー時の文字色 */
+      background-color: #e3f2fd; /* ホバー時の背景色 */
+      text-decoration: underline; /* ホバー時に下線を追加 */
+    }
   </style>
 </head>
 <body>
@@ -125,11 +167,18 @@
         <v-btn text href="#hours">神社の営業時間</v-btn>
         <v-btn text href="#methods">参拝方法</v-btn>
         <v-btn text href="#prayer">ご祈祷</v-btn>
+<<<<<<< HEAD
         <v-btn text href="#shop">公式ショップ</v-btn>
+        <v-btn text href="#omikuji">おみくじ</v-btn> <!-- 修正: おみくじセクションにリンク -->
+=======
+        <v-btn text href="index_ProductsPurchasePage.html">公式ショップ</v-btn>
+>>>>>>> c84e4b7172ef76392f10e77cb6a31cde3b58e6d4
         <v-btn text href="#contact">お問い合わせ</v-btn>
+        <v-btn text href="index_SignUp.html" class="signup-btn">新規会員登録</v-btn>
+        <v-btn text href="index.html" class="mypage-btn">マイページ</v-btn> 
       </v-app-bar>
 
-      <div class="hero-image"></div> <!-- Fixed hero image -->
+      <div class="hero-image"></div> 
 
       <v-main>
         <!-- パディングを調整するためにv-containerのスタイルをオーバーライド -->
@@ -139,6 +188,12 @@
           </div>
 
           <h1 class="main-title">架空神社</h1>
+
+          <div class="announcement" id="Announcement">
+            <h2 class="section-title">おしらせ</h2>
+            <a href="#free" class="announcement-link">秋の大祭：神楽と灯篭の夜</a>
+            <a href="#free" class="announcement-link">境内の改修工事のお知らせ</a>
+          </div>
 
           <!-- 神社の紹介 -->
           <div class="content" id="intro">
@@ -186,6 +241,15 @@
             </div>
           </div>
 
+          <!-- おみくじ -->
+          <div class="content" id="omikuji">
+            <h2 class="section-title">おみくじ</h2>
+            <p>こちらからおみくじをご覧いただけます。</p>
+            <div class="button-container">
+              <v-btn color="primary" href="https://purple-sky-0e170d100.5.azurestaticapps.net" target="_blank">おみくじを引く</v-btn> <!-- おみくじボタン -->
+            </div>
+          </div>
+
           <!-- お問い合わせ -->
           <div class="content" id="contact">
             <h2 class="section-title">お問い合わせ</h2>
@@ -228,7 +292,7 @@
               }
             });
           }, {
-            threshold: 0.1 // 画面の10%が見えるときに発動
+            threshold: 0.1
           });
 
           elements.forEach(element => {

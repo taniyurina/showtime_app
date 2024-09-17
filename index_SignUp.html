@@ -136,6 +136,7 @@
                     outlined
                     dense
                     required
+                    :rules="[emailLocalPartValidation]"
                     id="emailLocalPart"
                     @input="convertToHalfWidthAndRestrict('emailLocalPart')"
                   ></v-text-field>
@@ -146,6 +147,7 @@
                     outlined
                     dense
                     required
+                    :rules="[emailDomainValidation]"
                     class="email-domain-combobox"
                     id="emailDomain"
                     @input="convertToHalfWidthAndRestrict('emailDomain')"
@@ -186,15 +188,15 @@
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" class="form-field">
-                  <label for="passwordConfirm">パスワード（確認）</label>
+                  <label for="confirmPassword">パスワード確認</label>
                   <v-text-field
-                    v-model="passwordConfirm"
+                    v-model="confirmPassword"
                     type="password"
                     outlined
                     dense
                     required
-                    id="passwordConfirm"
-                    :error-messages="passwordMatchError"
+                    :rules="[passwordMatchValidation]"
+                    id="confirmPassword"
                   ></v-text-field>
                 </v-col>
               </v-row>
@@ -222,50 +224,45 @@
       vuetify: new Vuetify(),
       data() {
         return {
-          lastName: '', // 姓
-          firstName: '', // 名
+          lastName: '',
+          firstName: '',
           phone: '',
-          emailLocalPart: '', // メールアドレスのローカル部
-          emailDomain: '', // メールアドレスのドメイン部
+          emailLocalPart: '',
+          emailDomain: '',
           address: '',
-          password: '', // パスワード
-          passwordConfirm: '', // パスワード確認用
+          password: '',
+          confirmPassword: '',
           phoneValidation: v => v.length === 11 || '携帯電話番号は11桁で入力してください。',
+          emailLocalPartValidation: v =>
+            /^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]+$/.test(v) || 'メールアドレスのローカル部分に不正な文字が含まれています。',
+          emailDomainValidation: v =>
+            /^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]+$/.test(v) || 'ドメイン部分に不正な文字が含まれています。',
+          passwordMatchValidation: v =>
+            v === this.password || 'パスワードが一致しません。',
           domainOptions: [
             'docomo.co.jp', 'ezweb.ne.jp', 'i.softbank.jp', 'gmail.com', 'yahoo.co.jp', 'outlook.jp', 'icloud.com'
-          ],
-          passwordMatchError: '' // パスワード不一致時のエラーメッセージ
+          ]
         };
       },
       computed: {
         isPhoneValid() {
           return this.phone.length === 11;
         },
-        isPasswordMatch() {
-          return this.password === this.passwordConfirm;
-        },
         isFormValid() {
           return this.isPhoneValid &&
-            this.isPasswordMatch && // パスワードの一致を確認
             this.lastName &&
             this.firstName &&
             this.emailLocalPart &&
             this.emailDomain &&
             this.address &&
-            this.password;
+            this.password &&
+            this.confirmPassword === this.password;
         }
       },
       methods: {
         goToFinalConfirmationPage() {
-          if (!this.isPasswordMatch) {
-            this.passwordMatchError = 'パスワードが一致しません';
-            return;
-          }
-          
-          // メールアドレスのローカル部とドメイン部を結合
           const fullEmail = `${this.emailLocalPart}@${this.emailDomain}`;
 
-          // 顧客情報をlocalStorageに保存
           localStorage.setItem('customer', JSON.stringify({
             name: `${this.lastName}${this.firstName}`,
             phone: this.phone,
@@ -276,17 +273,15 @@
           window.location.href = 'index_SignUpFinalConfirmationPage.html';
         },
         convertToHalfWidth(field) {
-          // 全角文字を半角に変換
           this[field] = this[field].replace(/[Ａ-Ｚａ-ｚ０-９]/g, s =>
             String.fromCharCode(s.charCodeAt(0) - 0xFEE0)
           );
         },
         convertToHalfWidthAndRestrict(field) {
-          // 全角文字を半角に変換し、半角英数字と記号だけを許可
           const validChars = /[^a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]/g;
           this[field] = this[field]
             .replace(/[Ａ-Ｚａ-ｚ０-９]/g, s => String.fromCharCode(s.charCodeAt(0) - 0xFEE0))
-            .replace(validChars, ''); // 不正な文字を削除
+            .replace(validChars, '');
         }
       }
     });
@@ -298,17 +293,21 @@
       margin: auto;
     }
     .form-field {
-      margin-bottom: 8px; /* 各項目の間隔を調整 */
+      margin-bottom: 8px;
     }
     .email-domain-combobox {
-      width: auto; /* コンボボックスの幅を調整 */
-      display: inline-block; /* テキストフィールドと同じ行に配置 */
+      width: auto;
+      display: inline-block;
     }
-    /* コンボボックスの四角いボックススタイル */
-    .v-combobox .v-input__control,
-    .v-combobox .v-input__slot {
-      border-radius: 0 !important; /* 角を四角にする */
+    .confirmation-button {
+      margin-top: 20px;
+      text-align: center;
+    }
+    span {
+      font-size: 1.5em;
+      font-weight: bold;
     }
   </style>
 </body>
+
 </html>
