@@ -111,6 +111,9 @@
   border-radius: 5px; 
   background-color: #ffffff; 
  }
+ .reservation-id{
+  font-size: 15px;
+ }
   .reservation-date {
     font-size: 15px; 
   }
@@ -201,11 +204,15 @@
               <v-card-title>ご祈祷予約履歴</v-card-title>
               <v-card-text>
                 <v-list>
-                  <v-list-item v-for="reservation in reservations" :key="reservation.reservationId"  class="reservation-group">
+                  <v-list-item v-for="reservation in reservations" :key="reservation.reservationID"  class="reservation-group">
                     <v-list-item-content>
+                      <v-list-item-title class="reservation-id">予約ID: {{ reservation.reservationID }}</v-list-item-title>
                       <v-list-item-subtitle class="reservation-date">予約日: {{ reservation.reservationDate }}</v-list-item-subtitle>
                       <v-list-item-subtitle class="reservation-time">予約時間: {{ reservation.reservationTime }}</v-list-item-subtitle>
                     </v-list-item-content>
+                    <v-list-item-action>
+                      <v-btn color="error" @click="cancelReservation(reservation.reservationID)" small>この予約をキャンセル</v-btn>
+                    </v-list-item-action>
                   </v-list-item>
                 </v-list>
               </v-card-text>
@@ -307,30 +314,54 @@
         }
       },
       methods: {
-        async updateProfile() {
-          const CustomerID = sessionStorage.getItem('CustomerID');
-          window.location.href='index_UpdateProfile.html';
-        },
-        async cancelOrder(orderID) {
-          try {
-            const response = await axios.post('https://m3h-hasegawa-recreation3.azurewebsites.net/api/CancelOrder', {
-              orderIDs: [orderID]
-            });
-            if (response.status === 200) {
-              alert('注文がキャンセルされました。');
-              this.orders = this.orders.filter(order => order.orderID !== orderID); // Remove canceled order from list
-            } else {
-              alert('注文のキャンセルに失敗しました。');
-            }
-          } catch (error) {
-            console.error('Error canceling order:', error);
-            alert('注文のキャンセル中にエラーが発生しました。');
-          }
-        },
-        formatDate(dateString) {
+  async updateProfile() {
+    const CustomerID = sessionStorage.getItem('CustomerID');
+    window.location.href='index_UpdateProfile.html';
+  },
+  async cancelOrder(orderID) {
+    const confirmation = confirm('この注文をキャンセルしますか？');
+    if (!confirmation) return; // ユーザーがキャンセルを選んだら処理を中止
+
+    try {
+      const response = await axios.post('https://m3h-hasegawa-recreation3.azurewebsites.net/api/CancelOrder', {
+        orderIDs: [orderID]
+      });
+      if (response.status === 200) {
+        alert('注文がキャンセルされました。');
+        this.orders = this.orders.filter(order => order.orderID !== orderID);
+      } else {
+        alert('注文のキャンセルに失敗しました。');
+      }
+    } catch (error) {
+      console.error('Error canceling order:', error);
+      alert('注文のキャンセル中にエラーが発生しました。');
+    }
+  },
+  async cancelReservation(reservationID) {
+    const confirmation = confirm('この予約をキャンセルしますか？');
+    if (!confirmation) return; // ユーザーがキャンセルを選んだら処理を中止
+
+    try {
+      const response = await axios.post('https://m3h-hasegawa-recreation3.azurewebsites.net/api/CancelReservation', {
+        reservationIDs: [reservationID]
+      });
+      if (response.status === 200) {
+        alert('予約がキャンセルされました。');
+        this.reservations = this.reservations.filter(reservation => reservation.reservationID !== reservationID);
+      } else {
+        alert('予約のキャンセルに失敗しました。');
+      }
+    } catch (error) {
+      console.error('Error canceling reservation:', error);
+      alert('予約のキャンセル中にエラーが発生しました。');
+    }
+  },
+  formatDate(dateString) {
     const date = new Date(dateString);
     return date.toLocaleDateString('ja-JP') + ' ' + date.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
   }
+
+
 
       }
     });
