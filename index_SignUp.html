@@ -184,6 +184,7 @@
                     outlined
                     dense
                     required
+                    :rules="[passwordValidation]"
                     id="password"
                   ></v-text-field>
                 </v-col>
@@ -237,6 +238,8 @@
             /^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]+$/.test(v) || 'メールアドレスのローカル部分に不正な文字が含まれています。',
           emailDomainValidation: v =>
             /^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]+$/.test(v) || 'ドメイン部分に不正な文字が含まれています。',
+          passwordValidation: v =>
+            v.length >= 8 && /[a-zA-Z]/.test(v) && /\d/.test(v) || 'パスワードは8文字以上で、英字と数字を含めてください。',
           passwordMatchValidation: v =>
             v === this.password || 'パスワードが一致しません。',
           domainOptions: [
@@ -256,7 +259,9 @@
             this.emailDomain &&
             this.address &&
             this.password &&
-            this.confirmPassword === this.password;
+            this.confirmPassword === this.password &&
+            /[a-zA-Z]/.test(this.password) &&
+            /\d/.test(this.password);
         }
       },
       methods: {
