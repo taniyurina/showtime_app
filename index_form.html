@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+  <title>おみくじサイト</title>
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.birds.min.js"></script>
+  <style>   
+    #app {
+      background: rgba(0,0,0,0);  
+    }
+
+    #app[v-cloak] {
+      display: none;
+    }
+
+    v-card-text {
+      text-align:center
+    }
+
+    .success-text {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 80px;
+      font-family: 'Times New Roman', serif;
+      font-size:150px;
+      color: black; 
+    }
+
+    .twitter-share-button {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .twitter-share-button a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      background: linear-gradient(90deg, #1DA1F2, #1A91DA);
+      padding: 15px 30px;
+      border-radius: 50px;
+      font-size: 18px;
+      font-weight: bold;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+      transition: background 0.3s, transform 0.3s;
+    }
+
+    .twitter-share-button a:hover {
+      background: linear-gradient(90deg, #1A91DA, #1DA1F2);
+      transform: scale(1.05);
+    }
+
+    .twitter-share-button i {
+      margin-right: 10px;
+      font-size: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div id="bird">
+    <div id="app" v-cloak>
+      <v-app>
+        <v-container fill-height>
+          <v-row class="d-flex align-center justify-center">
+            <v-col class="d-flex align-center justify-center">
+              <v-card>
+                <v-card-actions>
+                  <v-btn @click="getFortune" color="primary" block>おみくじを引く</v-btn>
+                </v-card-actions>
+                <v-card-text>
+                  <transition name="fade">
+                    <span v-if="fortuneResult" class="success-text">
+                      <v-icon>mdi-luck</v-icon>
+                      {{ fortuneResult }}
+                    </span>
+                  </transition>
+                </v-card-text>
+              </v-card>
+            </v-col>
+          </v-row>
+          <v-row class="d-flex align-center justify-center">
+            <v-col class="d-flex align-center justify-center">
+              <div class="twitter-share-button" v-if="fortuneResult">
+                <a :href="twitterShareUrl" target="_blank">
+                  <i class="fab fa-twitter"></i>
+                  結果をポストする
+                </a>
+              </div>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-app>
+    </div>
+  </div>
+  
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+<script>
+  new Vue({
+    el: '#app',
+    vuetify: new Vuetify(),
+    data() {
+      return {
+        fortuneResult: null,
+        audio: new Audio('Result_click_sound.mp3'), // クリック時の音声
+        apiUrl: 'https://m3h-tomoki-3appfunctionapiapp.azurewebsites.net/api/GET_FORTUNE_RESULT', 
+        tweetText: 'おみくじの結果: ', 
+        pageUrl: window.location.href 
+      };
+    },
+    computed: {
+      twitterShareUrl() {
+        return `https://twitter.com/intent/tweet?text=${encodeURIComponent(this.tweetText + (this.fortuneResult || ''))}&url=${encodeURIComponent(this.pageUrl)}`;
+      }
+    },
+    methods: {
+      async getFortune() {
+        try {
+          
+          this.audio.play();
+          
+          const response = await fetch(this.apiUrl);
+          
+          if (!response.ok) {
+            throw new Error(`HTTPエラー！ ステータスコード: ${response.status}`);
+          }
+
+          const data = await response.json();
+          console.log(data);  
+
+          this.fortuneResult = data.fortuneResult;
+
+        } catch (error) {
+          // エラー発生時
+          console.error('エラー:', error);
+          this.fortuneResult = '結果';
+        }
+      }
+    }
+  });
+
+  // Vanta.js
+  VANTA.BIRDS({
+    el: "#bird", 
+    mouseControls: true,
+    touchControls: true,
+    gyroControls: false,
+    minHeight: 585.00,
+    minWidth: 200.00,
+    scale: 1.00,
+    scaleMobile: 1.00
+  });
+</script>
+</body>
+</html>
