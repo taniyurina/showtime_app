@@ -71,10 +71,10 @@
       text-decoration: underline;
     }
     .confirmation-section {
-  margin-bottom: 20px; 
+      margin-bottom: 20px; 
     }
    .confirmation-button {
-  margin-top: 20px; 
+      margin-top: 20px; 
     }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -213,6 +213,16 @@
             </v-btn>
           </v-col>
         </v-row>
+
+        <!-- キャンセルボタンを追加 -->
+        <v-row class="confirmation-button">
+          <v-col cols="12">
+            <v-btn color="secondary" @click="confirmCancel" large>
+              キャンセル
+            </v-btn>
+          </v-col>
+        </v-row>
+
       </v-container>
     </v-app>
   </div>
@@ -279,7 +289,27 @@
           }));
           window.location.href = 'index_SignUpFinalConfirmationPage.html';
         },
+<<<<<<< HEAD
         
+=======
+        confirmCancel() {
+          const result = confirm('本当にキャンセルしてホームページに戻りますか？');
+          if (result) {
+            window.location.href = 'index_HomePage.html';
+          }
+        },
+        convertToHalfWidth(field) {
+          this[field] = this[field].replace(/[Ａ-Ｚａ-ｚ０-９]/g, s =>
+            String.fromCharCode(s.charCodeAt(0) - 0xFEE0)
+          );
+        },
+        convertToHalfWidthAndRestrict(field) {
+          const validChars = /[^a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]/g;
+          this[field] = this[field]
+            .replace(/[Ａ-Ｚａ-ｚ０-９]/g, s => String.fromCharCode(s.charCodeAt(0) - 0xFEE0))
+            .replace(validChars, '');
+        }
+>>>>>>> d3907b7f5710f4eb3a5d7176fa8532dded46cea3
       }
     });
   </script>

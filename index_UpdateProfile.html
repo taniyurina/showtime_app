@@ -58,8 +58,11 @@
             </v-col>
           </v-row>
           <v-row>
-            <v-col cols="12" class="update-button">
+            <v-col cols="6" class="update-button">
               <v-btn color="primary" type="submit" large>更新する</v-btn>
+            </v-col>
+            <v-col cols="6" class="update-button">
+              <v-btn color="secondary" @click="confirmCancel" large>キャンセル</v-btn>
             </v-col>
           </v-row>
         </v-form>
@@ -129,9 +132,15 @@
             alert('セッションがタイムアウトしました。ログインしなおしてください。');
             window.location.href = 'index_Login.html';
           }
+        },
+        confirmCancel() {
+          if (confirm('プロフィールの更新をキャンセルしてもよろしいですか？')) {
+            window.location.href = 'index_Mypage.html'; // マイページへリダイレクト
+          }
         }
       }
     });
   </script>
 </body>
 </html>
+
