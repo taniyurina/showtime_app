@@ -71,10 +71,10 @@
       text-decoration: underline;
     }
     .confirmation-section {
-  margin-bottom: 20px; 
+      margin-bottom: 20px; 
     }
    .confirmation-button {
-  margin-top: 20px; 
+      margin-top: 20px; 
     }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -213,6 +213,16 @@
             </v-btn>
           </v-col>
         </v-row>
+
+        <!-- キャンセルボタンを追加 -->
+        <v-row class="confirmation-button">
+          <v-col cols="12">
+            <v-btn color="secondary" @click="confirmCancel" large>
+              キャンセル
+            </v-btn>
+          </v-col>
+        </v-row>
+
       </v-container>
     </v-app>
   </div>
@@ -276,6 +286,12 @@
             password: this.password 
           }));
           window.location.href = 'index_SignUpFinalConfirmationPage.html';
+        },
+        confirmCancel() {
+          const result = confirm('本当にキャンセルしてホームページに戻りますか？');
+          if (result) {
+            window.location.href = 'index_HomePage.html';
+          }
         },
         convertToHalfWidth(field) {
           this[field] = this[field].replace(/[Ａ-Ｚａ-ｚ０-９]/g, s =>

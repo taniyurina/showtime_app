@@ -56,6 +56,11 @@
       color: #0056b3;
       text-decoration: underline;
     }
+    .cancel-button {
+      margin-top: 15px;
+      display: flex;
+      justify-content: center;
+    }
 </style>
 </head>
 <body>
@@ -94,6 +99,16 @@
 >
                 ログイン
 </v-btn>
+
+<!-- キャンセルボタンの追加 -->
+<div class="cancel-button">
+  <v-btn
+    color="secondary"
+    @click="handleCancelClick"
+  >
+    キャンセル
+  </v-btn>
+</div>
 
 </v-form>
 </v-col>
@@ -148,6 +163,11 @@
             } else {
               alert('ネットワークエラーが発生しました。');
             }
+          }
+        },
+        handleCancelClick() {
+          if (confirm('ログインをキャンセルして、商品購入ページに戻りますか？')) {
+            window.location.href = 'index_ProductsPurchasePage.html';
           }
         }
       }
