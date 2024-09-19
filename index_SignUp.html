@@ -130,7 +130,7 @@
                 </v-col>
                 <!-- メールアドレス入力欄 -->
                 <v-col cols="12" class="form-field">
-                  <label for="email">メールアドレス</label>
+                  <label for="email">メールアドレス(半角)</label>
                   <v-text-field
                     v-model="emailLocalPart"
                     outlined
@@ -233,11 +233,13 @@
           address: '',
           password: '',
           confirmPassword: '',
-          phoneValidation: v => v.length === 11 || '携帯電話番号は11桁で入力してください。',
+          phoneValidation: v => 
+ 　　　　 (/^[0-9]+$/.test(v) && v.length === 11) || '携帯電話番号は11桁の半角数字で入力してください。',
+
           emailLocalPartValidation: v =>
-            /^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]+$/.test(v) || 'メールアドレスのローカル部分に不正な文字が含まれています。',
+            /^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]+$/.test(v) || 'メールアドレスに不正な文字が含まれています。',
           emailDomainValidation: v =>
-            /^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]+$/.test(v) || 'ドメイン部分に不正な文字が含まれています。',
+            /^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]+$/.test(v) || 'ドメインに不正な文字が含まれています。',
           passwordValidation: v =>
             v.length >= 8 && /[a-zA-Z]/.test(v) && /\d/.test(v) || 'パスワードは8文字以上で、英字と数字を含めてください。',
           passwordMatchValidation: v =>
@@ -277,17 +279,7 @@
           }));
           window.location.href = 'index_SignUpFinalConfirmationPage.html';
         },
-        convertToHalfWidth(field) {
-          this[field] = this[field].replace(/[Ａ-Ｚａ-ｚ０-９]/g, s =>
-            String.fromCharCode(s.charCodeAt(0) - 0xFEE0)
-          );
-        },
-        convertToHalfWidthAndRestrict(field) {
-          const validChars = /[^a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]/g;
-          this[field] = this[field]
-            .replace(/[Ａ-Ｚａ-ｚ０-９]/g, s => String.fromCharCode(s.charCodeAt(0) - 0xFEE0))
-            .replace(validChars, '');
-        }
+        
       }
     });
   </script>
