@@ -72,13 +72,17 @@
     .v-list-item-action .v-btn {
       min-width: auto;
     }
+    .is-out-of-stock {
+  opacity: 0.5; /* グレーアウト */
+  pointer-events: none; /* クリック無効化 */
+} 
   </style>
 </head>
 <body>
   <div id="app" v-cloak>
     <v-app>
       <v-app-bar class="app-bar" app>
-        <v-toolbar-title>商品注文アプリ</v-toolbar-title>
+        <v-toolbar-title>公式ショップ</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn icon @click="showCart">
           <v-badge :content="cartTotalItems" color="red" overlap>
@@ -136,16 +140,29 @@
             <v-col v-for="product in products" :key="product.id" cols="12" md="4">
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-card class="product-card" v-bind="attrs" v-on="on">
+                  <v-card
+                    class="product-card"
+                    v-bind="attrs"
+                    v-on="on"
+                    v-bind:class="{ 'is-out-of-stock': !isProductAvailable(product) }"
+                  >
                     <v-img :src="product.image" height="200px" class="product-image" @click="showImage(product.image)"></v-img>
                     <v-card-title>{{ product.name }}</v-card-title>
                     <v-card-subtitle>{{ product.price }}円</v-card-subtitle>
+                    <v-card-subtitle v-if="isProductAvailable(product)">在庫あり</v-card-subtitle>
+                    <v-card-subtitle v-else>在庫なし</v-card-subtitle>
                     <v-card-actions>
-                      <v-text-field v-model.number="product.quantity" label="数量" type="number" min="1" hide-details></v-text-field>
+                      <v-text-field
+                        v-model.number="product.quantity"
+                        label="数量"
+                        type="number"
+                        min="1"
+                        hide-details
+                      ></v-text-field>
                       <v-btn 
                         class="order-button" 
                         @click="addToCart(product)" 
-                        :disabled="isQuantityExceedsLimit(product)" 
+                        :disabled="!isProductAvailable(product)" 
                         rounded
                       >
                         <v-icon>mdi-cart-plus</v-icon> カートに入れる
@@ -186,25 +203,55 @@
       data() {
         return {
           products: [
-            { id: 1, name: 'お守り(合格祈願)', price: 700, image: 'goukaku_kigan.jpg', quantity: 1, description: 'このお守りは試験合格を祈願するための特別なアイテムです。合格のご利益を願って持っておいてください。' },
-            { id: 2, name: 'お守り(家内安全)', price: 700, image: 'kanai_anzen.jpg', quantity: 1, description: '家族全員の安全と健康を祈るためのお守りです。家庭の平安を保つためにどうぞ。' },
-            { id: 3, name: 'お守り(交通安全)', price: 700, image: 'koutsu_anzen.jpg', quantity: 1, description: '運転中の安全を守るための交通安全のお守りです。事故やトラブルから守ってくれることでしょう。' },
-            { id: 4, name: '御朱印帳', price: 1500, image: 'gosyuin_chou.png', quantity: 1, description: '御朱印を集めるための帳面です。旅行や参拝の記録としてお使いください。' },
-            { id: 5, name: 'お神札', price: 1000, image: 'jinja_omamori_ofuda.png', quantity: 1, description: '神社で授与されるお神札です。家やお店にお祀りして、神様の加護を受けましょう。' },
-            { id: 6, name: 'パワーストーン', price: 2000, image: 'power_stone.png', quantity: 1, description: 'エネルギーを引き出すとされるパワーストーンです。持つことでポジティブなエネルギーを得られるでしょう。' }
+            { id: 1, name: 'お守り(合格祈願)', price: 700, image: 'goukaku_kigan.jpg', quantity: 1, description: 'このお守りは試験合格を祈願するための特別なアイテムです。合格のご利益を願って持っておいてください。' , stock: 0  },
+            { id: 2, name: 'お守り(家内安全)', price: 700, image: 'kanai_anzen.jpg', quantity: 1, description: '家族全員の安全と健康を祈るためのお守りです。家庭の平安を保つためにどうぞ。'  , stock: 0 },
+            { id: 3, name: 'お守り(交通安全)', price: 700, image: 'koutsu_anzen.jpg', quantity: 1, description: '運転中の安全を守るための交通安全のお守りです。事故やトラブルから守ってくれることでしょう。'  , stock: 0 },
+            { id: 4, name: '御朱印帳', price: 1500, image: 'gosyuin_chou.png', quantity: 1, description: '御朱印を集めるための帳面です。旅行や参拝の記録としてお使いください。'  , stock: 0 },
+            { id: 5, name: 'お神札', price: 1000, image: 'jinja_omamori_ofuda.png', quantity: 1, description: '神社で授与されるお神札です。家やお店にお祀りして、神様の加護を受けましょう。'  , stock: 0 },
+            { id: 6, name: 'パワーストーン', price: 2000, image: 'power_stone.png', quantity: 1, description: 'エネルギーを引き出すとされるパワーストーンです。持つことでポジティブなエネルギーを得られるでしょう。'  , stock: 0 }
           ],
+          stockInfo: {}, // 在庫情報を格納
           cart: [],
           cartDialog: false,
           imageDialog: false,
           selectedImage: ''
         };
       },
+      mounted() {
+    this.fetchStock(); // APIから在庫情報を取得
+     },
       computed: {
         cartTotalItems() {
           return this.cart.reduce((total, item) => total + item.quantity, 0);
         }
       },
       methods: {
+        async fetchStock() {
+      try {
+        const response = await fetch('https://m3h-hasegawa-recreation3.azurewebsites.net/api/GetAllStock'); 
+        const stockData = await response.json();
+
+        console.log('Fetched stock data:', stockData); 
+
+      // 在庫情報をproductsに直接追加
+    stockData.forEach(item => {
+      const product = this.products.find(p => p.id.toString() === item.itemID);
+
+      if (product) {
+        product.stock = item.stock; 
+      }
+    });
+    console.log('Updated products:', this.products); 
+  } catch (error) {
+    console.error('Error fetching stock:', error);
+  }
+  
+        
+    },
+    isProductAvailable(product) {
+      console.log(`Checking availability for ${product.name}: stock = ${product.stock}`);
+      return product.stock > 0; // stockがあるかどうかをチェック
+    },
         addToCart(product) {
           if (product.quantity <= 0) {
             alert('商品数量は1以上でなければなりません。');
