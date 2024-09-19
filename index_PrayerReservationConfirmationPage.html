@@ -20,26 +20,12 @@
     .confirmation-section {
       margin-bottom: 20px;
     }
-    .v-stepper-step.v-stepper-step--active {
-      color: #6200ea;
-      font-weight: bold;
-    }
   </style>
 </head>
 <body>
   <div id="app">
     <v-app>
       <v-container class="confirmation-container">
-        <v-stepper v-model="step" class="mb-5">
-          <v-stepper-header>
-            <v-stepper-step :complete="step > 1" step="1">ご祈祷予約</v-stepper-step>
-            <v-divider></v-divider>
-            <v-stepper-step :complete="step > 2" step="2" class="v-stepper-step--active">最終確認</v-stepper-step>
-            <v-divider></v-divider>
-            <v-stepper-step :complete="step > 3" step="3">完了</v-stepper-step>
-          </v-stepper-header>
-        </v-stepper>
-
         <h1 class="confirmation-title">最終確認</h1>
 
         <v-card class="confirmation-section">
@@ -66,12 +52,6 @@
               </v-list-item>
               <v-list-item>
                 <v-list-item-content>
-                  <v-list-item-title>住所</v-list-item-title>
-                  <v-list-item-subtitle>{{ customer.address }}</v-list-item-subtitle>
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-content>
                   <v-list-item-title>予約日</v-list-item-title>
                   <v-list-item-subtitle>{{ reservation.ReservationDate }}</v-list-item-subtitle>
                 </v-list-item-content>
@@ -86,7 +66,7 @@
           </v-card-text>
         </v-card>
 
-        <v-row class="confirmation-button">
+        <v-row>
           <v-col cols="12">
             <v-btn color="primary" @click="completeOrder" large>予約を確定する</v-btn>
           </v-col>
@@ -104,7 +84,6 @@
       vuetify: new Vuetify(),
       data() {
         return {
-          step: 2,
           customer: {},
           reservation: {}
         };
@@ -118,22 +97,15 @@
 
         // セッションストレージから顧客IDを取得
         const CustomerID = sessionStorage.getItem('CustomerID');
-        console.log('Fetched CustomerID from sessionStorage:', CustomerID);
-
         if (CustomerID) {
           try {
-            // 顧客情報の取得
             const profileApiEndpoint = `https://m3h-hasegawa-recreation3.azurewebsites.net/api/CustomerProfile?CustomerID=${CustomerID}`;
             const profileResponse = await axios.get(profileApiEndpoint);
             if (profileResponse.status === 200) {
-              this.customer = profileResponse.data; // 顧客情報を設定
-            } else {
-              console.error('Error fetching data:', profileResponse);
-              alert('顧客情報の取得に失敗しました。');
+              this.customer = profileResponse.data;
             }
           } catch (error) {
-            console.error('Error fetching customer information:', error);
-            alert('顧客情報の取得に失敗しました。');
+            console.error('顧客情報の取得に失敗しました:', error);
           }
         }
       },
@@ -146,7 +118,7 @@
           };
 
           try {
-            const response = await fetch('https://m3h-hasegawa-recreation3.azurewebsites.net/api/InsertPrayerReservation', {
+            const response = await fetch('https://m3-hasegawa-recreation3.azurewebsites.net/api/InsertPrayerReservation', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json'
@@ -155,14 +127,29 @@
             });
 
             if (response.status === 200) {
-              localStorage.clear(); // 注文完了後にローカルストレージをクリア
-              window.location.href = 'index_PrayerReservationSuccess.html'; // 成功ページにリダイレクト
+              // メール送信のリクエスト
+              await this.sendConfirmationEmail();
+              localStorage.clear();
+              window.location.href = 'index_PrayerReservationSuccess.html';
             } else {
-              alert('予約に失敗しました。後ほど再試行してください。');
+              alert('予約に失敗しました。');
             }
           } catch (error) {
             console.error('予約処理中にエラーが発生しました:', error);
-            alert('予約に失敗しました。後ほど再試行してください。');
+            alert('予約に失敗しました。');
+          }
+        },
+        async sendConfirmationEmail() {
+          const emailRequest = {
+            Email: this.customer.email,
+            Subject: 'ご祈祷予約の確認',
+            Content: `予約日: ${this.reservation.ReservationDate}\n予約時間: ${this.reservation.ReservationTime}`
+          };
+
+          try {
+            await axios.post('https://m3h-tomoki-3appfunctionapiapp.azurewebsites.net/api/SendEmail', emailRequest);
+          } catch (error) {
+            console.error('メール送信中にエラーが発生しました:', error);
           }
         }
       }
