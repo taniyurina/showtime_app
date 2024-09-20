@@ -132,14 +132,15 @@
   <div id="app">
     <v-app>
       <v-app-bar app color="green darken-4" dark>
-        <v-toolbar-title>神社のご祈祷</v-toolbar-title>
+        <v-toolbar-title style="cursor: pointer;" @click="goToHomePage">架空神社</v-toolbar-title>
+
         <v-spacer></v-spacer>
         <v-btn text href="#OverviewOfPrayer">ご祈祷の概要</v-btn>
         <v-btn text href="#participation">参加概要</v-btn>
         <v-btn text href="index_PrayerReservation.html">予約</v-btn>
       </v-app-bar>
 
-      <a href="index_HomePage.html" class="back-to-home"><i class="fas fa-home"></i></a> <!-- トップページに戻るアイコン -->
+      
 
       <div class="hero-image"></div> <!-- Fixed hero image -->
 
@@ -200,7 +201,7 @@
             <p>※予約には会員登録が必要となります。<br>まだ会員でない方は<a href="index_SignUp.html" class="member-signup">こちら</a>から会員登録をお願いします。</p>
             <!-- 予約ボタンをカード内に追加 -->
             <div class="reservation-btn">
-              <v-btn color="primary" href="index_PrayerReservation.html" target="_blank">御祈祷予約フォーム</v-btn>
+              <v-btn color="primary" href="index_PrayerReservation.html" target="_blank">ご祈祷予約フォーム</v-btn>
             </div>
           </div>
         </v-container>
@@ -208,7 +209,7 @@
 
       <v-footer app>
         <v-col class="text-center" cols="12">
-          <span>© 2024 神社の御祈祷</span>
+          <span>© 2024 神社のご祈祷</span>
         </v-col>
       </v-footer>
     </v-app>
@@ -226,32 +227,37 @@
         this.fadeInHeroImage();
       },
       methods: {
-        observeElements() {
-          const elements = document.querySelectorAll('.content, .main-title');
-
-          const observer = new IntersectionObserver(entries => {
-            entries.forEach(entry => {
-              if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-                observer.unobserve(entry.target);
-              }
-            });
-          }, {
-            threshold: 0.1
-          });
-
-          elements.forEach(element => {
-            observer.observe(element);
-          });
-        },
-        fadeInHeroImage() {
-          const heroImage = document.querySelector('.hero-image');
-          if (heroImage) {
-            heroImage.classList.add('visible');
-          }
+  observeElements() {
+    const elements = document.querySelectorAll('.content, .main-title');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
         }
-      }
+      });
+    }, {
+      threshold: 0.1
     });
+
+    elements.forEach(element => {
+      observer.observe(element);
+    });
+  },
+  fadeInHeroImage() {
+    const heroImage = document.querySelector('.hero-image');
+    if (heroImage) {
+      heroImage.classList.add('visible');
+    }
+  },
+  goToHomePage() {
+    window.location.href = 'index_HomePage.html';
+  }
+}
+
+      }
+    );
   </script>
 </body>
 </html>
+
