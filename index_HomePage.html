@@ -111,7 +111,7 @@
       font-weight: bold;
     }
     .v-btn {
-      margin: 5px; /* ボタン間のスペース */
+      margin: 5px;
     }
     .signup-btn, .mypage-btn {
       color: #ffffff;
@@ -122,38 +122,65 @@
       color: #0288d1;
     }
 
-    /* 新しいお知らせ欄のスタイル */
     .announcement {
-      background-color: #ffffff; /* 背景色 */
-      border-radius: 8px; /* 角を丸くする */
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 軽い影を追加 */
-      padding: 20px; /* 内側の余白 */
-      margin: 20px 0; /* 上下の余白 */
-      border-left: 4px solid #0288d1; /* 左側のボーダーで強調 */
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      margin: 20px 0;
+      border-left: 4px solid #0288d1;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+    }
+
+    .announcement.visible {
+      opacity: 1;
+      transform: translateY(0);
     }
 
     .announcement h2 {
-      font-size: 24px; /* 見出しのフォントサイズ */
-      margin-bottom: 15px; /* 見出しとリンクの間隔 */
-      color: #0288d1; /* 見出しの色 */
-      border-bottom: 2px solid #0288d1; /* 下にラインを追加 */
-      padding-bottom: 10px; /* 下の余白 */
+      font-size: 24px;
+      margin-bottom: 15px;
+      color: #0288d1;
+      border-bottom: 2px solid #0288d1;
+      padding-bottom: 10px;
     }
 
     .announcement-link {
-      display: block; /* リンクをブロック要素にして改行 */
-      margin-bottom: 10px; /* リンク間にスペースを追加 */
-      color: #1a73e8; /* リンクの色 */
-      text-decoration: none; /* 下線を削除 */
-      transition: color 0.3s ease, background-color 0.3s ease; /* 色の変化にアニメーション */
-      padding: 10px; /* リンクの内側余白 */
-      border-radius: 4px; /* リンクの角を丸くする */
+      display: block;
+      margin-bottom: 10px;
+      color: #1a73e8;
+      text-decoration: none;
+      transition: color 0.3s ease, background-color 0.3s ease;
+      padding: 10px;
+      border-radius: 4px;
     }
 
     .announcement-link:hover {
-      color: #0288d1; /* ホバー時の文字色 */
-      background-color: #e3f2fd; /* ホバー時の背景色 */
-      text-decoration: underline; /* ホバー時に下線を追加 */
+      color: #0288d1;
+      background-color: #e3f2fd;
+      text-decoration: underline;
+    }
+
+    .intro-content {
+      font-family: 'Georgia', serif; /* フォントを変更 */
+      font-size: 20px; /* サイズを変更 */
+      line-height: 1.6; /* 行間を調整 */
+      background-color: #f9f9f9; /* 背景色を追加 */
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin: 0 auto 80px auto;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+      scroll-margin-top: 80px;
+    }
+    
+    .intro-content.visible {
+      opacity: 1;
+      transform: translateY(0);
     }
   </style>
 </head>
@@ -168,7 +195,7 @@
         <v-btn text href="#methods">参拝方法</v-btn>
         <v-btn text href="#prayer">ご祈祷</v-btn>
         <v-btn text href="#shop">公式ショップ</v-btn>
-        <v-btn text href="#omikuji">おみくじ</v-btn> <!-- 修正: おみくじセクションにリンク -->
+        <v-btn text href="#omikuji">おみくじ</v-btn>
         <v-btn text href="#contact">お問い合わせ</v-btn>
         <v-btn text href="index_SignUp.html" class="signup-btn">新規会員登録</v-btn>
         <v-btn text href="index.html" class="mypage-btn">マイページ</v-btn> 
@@ -177,7 +204,6 @@
       <div class="hero-image"></div> 
 
       <v-main>
-        <!-- パディングを調整するためにv-containerのスタイルをオーバーライド -->
         <v-container style="padding: 0;">
           <div class="image-container">
             <img src="Shrine1.jpg" alt="神社の写真">
@@ -185,34 +211,32 @@
 
           <h1 class="main-title">架空神社</h1>
 
+          <!-- 神社の紹介 -->
+          <div class="intro-content" id="intro">
+            <h2 class="section-title">神社の紹介</h2>
+            <p>架空神社は、静かな森の中に佇む歴史ある神社です。この神社は、地域の人々に愛される場として、また訪れる人々に心の平安をもたらす場所として、多くの人に親しまれています。四季折々の美しい風景と共に、心安らぐひとときをお過ごしください。私たちの神社では、特別な行事や祭りも開催されており、訪れるたびに新しい体験が待っています。<br>ぜひ、あなたも架空神社の魅力を感じにいらしてください。</p>
+          </div>
+
+          <!-- おしらせ -->
           <div class="announcement" id="Announcement">
             <h2 class="section-title">おしらせ</h2>
             <a href="index_festival.html" class="announcement-link">秋の大祭：神楽と灯篭の夜</a>
-            <a href="index_construction.html" class="announcement-link">境内の改修工事のお知らせ</a>
-          </div>
-
-          <!-- 神社の紹介 -->
-          <div class="content" id="intro">
-            <h2 class="section-title">神社の紹介</h2>
-            <p>架空神社は、静かな森の中に佇む歴史ある神社です。四季折々の美しい風景と共に、心安らぐひとときをお過ごしください。</p>
+            <a href="index_construction.html" class="announcement-link">境内工事のお知らせ</a>
           </div>
 
           <!-- 神社の営業時間 -->
           <div class="content" id="hours">
             <h2 class="section-title">神社の営業時間</h2>
-            <p>神社の営業時間は以下の通りです:</p>
-            <ul>
-              <li>月曜日〜金曜日: 9:00 - 17:00</li>
-              <li>土曜日: 10:00 - 18:00</li>
-              <li>日曜日: 10:00 - 17:00</li>
-            </ul>
+            <p>平日: 9:00 - 17:00<br>
+              土日祝: 9:00 - 18:00</p>
           </div>
 
           <!-- 参拝方法 -->
           <div class="content" id="methods">
             <h2 class="section-title">参拝方法</h2>
+            <p>神社を参拝する際の一般的な流れは以下の通りです:</p>
             <ol>
-              <li>鳥居をくぐる前に一礼します。</li>
+              <li>境内に入る前に一礼します。</li>
               <li>手水舎で手と口を清めます。</li>
               <li>本殿に進み、賽銭を入れます。</li>
               <li>鈴を鳴らし、二礼二拍手一礼を行います。</li>
@@ -222,7 +246,7 @@
           <!-- ご祈祷 -->
           <div class="content" id="prayer">
             <h2 class="section-title">ご祈祷</h2>
-            <p>神社では、皆様の健康や幸せを祈るための御祈祷を行っています。</p>
+            <p>神社では、皆様の健康や幸せを祈るための御祈祷を行っています。特に、家族の健康や商売繁盛、交通安全など、さまざまなご祈祷に対応しています。ぜひご予約の上、お越しください。</p>
             <div class="button-container">
               <v-btn color="primary" href="index_GokitouHomePage.html">ご祈祷予約ページへ</v-btn>
             </div>
@@ -231,7 +255,7 @@
           <!-- 公式ショップ -->
           <div class="content" id="shop">
             <h2 class="section-title">公式ショップ</h2>
-            <p>神社の公式グッズやお守りなどはこちらからご購入いただけます。</p>
+            <p>神社の公式グッズやお守りなどはこちらからご購入いただけます。訪れた際には、ぜひお立ち寄りください。オンラインショップもご利用いただけます。</p>
             <div class="button-container">
               <v-btn color="primary" href="index_ProductsPurchasePage.html" target="_blank">公式ショップに行く</v-btn>
             </div>
@@ -240,15 +264,11 @@
           <!-- おみくじ -->
           <div class="content" id="omikuji">
             <h2 class="section-title">おみくじ</h2>
-            <p>🌟 おみくじを引いて運勢を占おう！ 🌟
-              <br>
-              神社に行かなくてもあなたの運勢を簡単に知ることができます。<br>
-              おみくじを引いて今のあなたの運勢を見てみましょう。<br>
-              ワクワクしながらタップしてみてください。
-              運勢はあなたの手の中に！✨
-              </p>
+            <p>🌟 おみくじを引いて運勢を占おう！ 🌟<br>
+              神社に行かなくてもあなたの運勢を簡単に知ることができます。おみくじを引いて今のあなたの運勢を見てみましょう。ワクワクしながらタップしてみてください。運勢はあなたの手の中に！✨
+            </p>
             <div class="button-container">
-              <v-btn color="primary" href="index_form.html" target="_blank">おみくじを引く</v-btn> <!-- おみくじボタン -->
+              <v-btn color="primary" href="index_form.html" target="_blank">おみくじを引く</v-btn>
             </div>
           </div>
 
@@ -284,7 +304,7 @@
       },
       methods: {
         observeElements() {
-          const elements = document.querySelectorAll('.content, .main-title');
+          const elements = document.querySelectorAll('.content, .main-title, .intro-content, .announcement');
 
           const observer = new IntersectionObserver(entries => {
             entries.forEach(entry => {
