@@ -289,9 +289,7 @@
           }));
           window.location.href = 'index_SignUpFinalConfirmationPage.html';
         },
-<<<<<<< HEAD
         
-=======
         confirmCancel() {
           const result = confirm('本当にキャンセルしてホームページに戻りますか？');
           if (result) {
@@ -299,17 +297,12 @@
           }
         },
         convertToHalfWidth(field) {
-          this[field] = this[field].replace(/[Ａ-Ｚａ-ｚ０-９]/g, s =>
-            String.fromCharCode(s.charCodeAt(0) - 0xFEE0)
-          );
+          
         },
         convertToHalfWidthAndRestrict(field) {
-          const validChars = /[^a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]/g;
-          this[field] = this[field]
-            .replace(/[Ａ-Ｚａ-ｚ０-９]/g, s => String.fromCharCode(s.charCodeAt(0) - 0xFEE0))
-            .replace(validChars, '');
+          const validChars = /[^\uFF00-\uFFEFa-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]/g; // 全角文字を許可
+  　　　　this[field] = this[field].replace(validChars, ''); // 無効な文字を削除
         }
->>>>>>> d3907b7f5710f4eb3a5d7176fa8532dded46cea3
       }
     });
   </script>
