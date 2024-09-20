@@ -72,11 +72,28 @@
           <li><strong>場所：</strong>架空神社 境内</li>
           <li><strong>参加費：</strong>無料</li>
         </ul>
-      </div>
+        <div class="button-container">
+          <v-btn href="index_HomePage.html" color="primary" @click="returnbotton">戻る</v-btn>
+        </div>
     </v-app>
   </div>
-
   <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+  <script>
+        new Vue({
+      el: '#app',
+      vuetify: new Vuetify(),
+      data() {
+        return {
+          // データをここに追加
+        };
+      },
+      methods: {
+        returnbotton() {
+          window.location.href = 'index_HomePage.html';
+        }
+      }
+    });
+  </script>
 </body>
 </html>
