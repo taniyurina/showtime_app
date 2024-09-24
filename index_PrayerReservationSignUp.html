@@ -95,7 +95,14 @@
     >
       ログイン
     </v-btn>
-    
+    <!-- 戻るボタンを追加 -->
+    <v-btn
+      color="secondary"
+      block
+      @click="handleBackClick"
+    >
+      戻る
+    </v-btn>
   </v-form>
 </div>
 </v-col>
@@ -151,9 +158,16 @@
               alert('ネットワークエラーが発生しました。');
             }
           }
+        },
+        // 戻るボタンクリック時の処理
+        handleBackClick() {
+          if (confirm('日時を再度選択する必要があります。戻りますか？')) {
+            window.location.href = 'index_PrayerReservation.html';
+          }
         }
       }
     });
 </script>
 </body>
 </html>
+
