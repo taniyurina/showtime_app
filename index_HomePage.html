@@ -28,6 +28,8 @@
       opacity: 1;
       transform: translateY(0);
     }
+
+    
     .section-title {
       font-size: 28px;
       font-weight: bold;
@@ -182,6 +184,40 @@
       opacity: 1;
       transform: translateY(0);
     }
+
+    html {
+    scroll-behavior: smooth;
+}
+.pagetop {
+    height: 50px;
+    width: 50px;
+    position: fixed;
+    right: 30px;
+    bottom: 70px;
+    background: #fff;
+    border: solid 2px #000;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+    box-shadow: 0 4px 6px rgb(0 0 0 / 30%);
+}
+
+.pagetop__arrow {
+    height: 10px;
+    width: 10px;
+    border-top: 3px solid #000;
+    border-right: 3px solid #000;
+    transform: translateY(20%) rotate(-45deg);
+}
+@media (hover: hover) and (pointer: fine) {
+    .pagetop:hover, .pagetop:hover .pagetop__arrow {
+        border-color: #3293e7;
+    }
+}
+
+
   </style>
 </head>
 <body>
@@ -190,14 +226,13 @@
       <v-app-bar app color="primary" dark>
         <v-toolbar-title>架空神社</v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-btn text href="#intro">神社の紹介</v-btn>
-        <v-btn text href="#hours">神社の営業時間</v-btn>
-        <v-btn text href="#methods">参拝方法</v-btn>
+         <v-divider class="mx-4" vertical thickness="5" color="#3293e7" Inset></v-divider>
         <v-btn text href="#prayer">ご祈祷</v-btn>
+        <v-divider class="mx-4" vertical thickness="5" color="#3293e7" Inset></v-divider>
         <v-btn text href="#shop">公式ショップ</v-btn>
-        <v-btn text href="#omikuji">おみくじ</v-btn>
+        <v-divider class="mx-4" vertical thickness="5" color="#3293e7" Inset></v-divider>
         <v-btn text href="#contact">お問い合わせ</v-btn>
-        <v-btn text href="index_SignUp.html" class="signup-btn">新規会員登録</v-btn>
+        <v-divider class="mx-4" vertical thickness="5" color="#3293e7" Inset></v-divider>
         <v-btn text href="index.html" class="mypage-btn">マイページ</v-btn> 
       </v-app-bar>
 
@@ -214,7 +249,7 @@
           <!-- 神社の紹介 -->
           <div class="intro-content" id="intro">
             <h2 class="section-title">神社の紹介</h2>
-            <p>架空神社は、静かな森の中に佇む歴史ある神社です。この神社は、地域の人々に愛される場として、また訪れる人々に心の平安をもたらす場所として、多くの人に親しまれています。四季折々の美しい風景と共に、心安らぐひとときをお過ごしください。私たちの神社では、特別な行事や祭りも開催されており、訪れるたびに新しい体験が待っています。<br>ぜひ、あなたも架空神社の魅力を感じにいらしてください。</p>
+            <p>架空神社は、静かな森の中に佇む歴史ある神社です。この神社は、地域の人々に愛される場として、また訪れる人々に心の平安をもたらす場として、多くの人に親しまれています。四季折々の美しい風景と共に、心安らぐひとときをお過ごしください。当神社では、特別な行事や祭りも開催しており、訪れるたびに新しい体験が待っています。<br>ぜひ、架空神社の魅力を感じにいらしてください。</p>
           </div>
 
           <!-- おしらせ -->
@@ -234,7 +269,7 @@
           <!-- 参拝方法 -->
           <div class="content" id="methods">
             <h2 class="section-title">参拝方法</h2>
-            <p>神社を参拝する際の一般的な流れは以下の通りです:</p>
+            <p>神社を参拝する際の一般的な流れは以下の通りです。</p>
             <ol>
               <li>境内に入る前に一礼します。</li>
               <li>手水舎で手と口を清めます。</li>
@@ -246,7 +281,7 @@
           <!-- ご祈祷 -->
           <div class="content" id="prayer">
             <h2 class="section-title">ご祈祷</h2>
-            <p>神社では、皆様の健康や幸せを祈るための御祈祷を行っています。特に、家族の健康や商売繁盛、交通安全など、さまざまなご祈祷に対応しています。ぜひご予約の上、お越しください。</p>
+            <p>当神社では、皆様の健康や幸せを祈るための御祈祷を行っています。特に、家族の健康や商売繁盛、交通安全など、さまざまなご祈祷に対応しています。ぜひご予約の上、ご参加ください。</p>
             <div class="button-container">
               <v-btn color="primary" href="index_GokitouHomePage.html">ご祈祷予約ページへ</v-btn>
             </div>
@@ -257,7 +292,7 @@
             <h2 class="section-title">公式ショップ</h2>
             <p>神社の公式グッズやお守りなどはこちらからご購入いただけます。訪れた際には、ぜひお立ち寄りください。オンラインショップもご利用いただけます。</p>
             <div class="button-container">
-              <v-btn color="primary" href="index_ProductsPurchasePage.html" target="_blank">公式ショップに行く</v-btn>
+              <v-btn color="primary" href="index_ProductsPurchasePage.html" target="_blank">公式ショップへ</v-btn>
             </div>
           </div>
 
@@ -277,11 +312,13 @@
             <h2 class="section-title">お問い合わせ</h2>
             <div class="contact-info">
               <p>電話番号: 03-1234-5678</p>
-              <p>メール: <a href="mailto:info@kakushinjinja.jp">info@kakushinjinja.jp</a></p>
+              <p>メール: <a href="mailto:info@kakushinjinja.jp">info@kakujinja.jp</a></p>
             </div>
           </div>
         </v-container>
       </v-main>
+
+      <a class="pagetop" href="#"><div class="pagetop__arrow"></div></a>
 
       <v-footer app>
         <v-col class="text-center" cols="12">

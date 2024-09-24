@@ -255,9 +255,9 @@
  　　　　 (/^[0-9]+$/.test(v) && v.length === 11) || '携帯電話番号は11桁の半角数字で入力してください。',
 
           emailLocalPartValidation: v =>
-            /^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]+$/.test(v) || 'メールアドレスに不正な文字が含まれています。',
+            /^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]+$/.test(v) || '不正な文字が含まれています。',
           emailDomainValidation: v =>
-            /^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]+$/.test(v) || 'ドメインに不正な文字が含まれています。',
+            /^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]+$/.test(v) || '不正な文字が含まれています。',
           passwordValidation: v =>
             v.length >= 8 && /[a-zA-Z]/.test(v) && /\d/.test(v) || 'パスワードは8文字以上で、英字と数字を含めてください。',
           passwordMatchValidation: v =>
