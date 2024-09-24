@@ -87,7 +87,10 @@
         </v-card>
 
         <v-row class="confirmation-button">
-          <v-col cols="12">
+          <v-col cols="6">
+            <v-btn color="secondary" @click="goBack" large>戻る</v-btn>
+          </v-col>
+          <v-col cols="6" class="text-right">
             <v-btn color="primary" @click="completeOrder" large>予約を確定する</v-btn>
           </v-col>
         </v-row>
@@ -138,7 +141,7 @@
       methods: {
         async completeOrder() {
           const reservationData = {
-            CustomerID: sessionStorage.getItem('CustomerID'), 
+            CustomerID: sessionStorage.getItem('CustomerID'),
             ReservationDate: this.reservation.ReservationDate,
             ReservationTime: this.reservation.ReservationTime
           };
@@ -161,6 +164,12 @@
           } catch (error) {
             console.error('予約処理中にエラーが発生しました:', error);
             alert('予約に失敗しました。後ほど再試行してください。');
+          }
+        },
+        goBack() {
+          if (confirm('戻ると日時を再選択する必要があります。よろしいですか？')) {
+            localStorage.removeItem('reservationprayer'); // ローカルストレージから予約情報を削除
+            window.location.href = 'index_PrayerReservation.html'; // 予約ページに戻る
           }
         }
       }

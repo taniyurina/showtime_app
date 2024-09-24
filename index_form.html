@@ -48,6 +48,7 @@
       font-weight: bold;
       box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
       transition: background 0.3s, transform 0.3s;
+      color: white !important; 
     }
 
     .twitter-share-button a:hover {
@@ -58,6 +59,30 @@
     .twitter-share-button i {
       margin-right: 10px;
       font-size: 20px;
+    }
+
+    .back-home-button {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .back-home-button a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      background: #2196F3;
+      padding: 15px 30px;
+      border-radius: 50px;
+      font-size: 18px;
+      font-weight: bold;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+      color: white !important;
+    }
+
+    .back-home-button a:hover {
+      background: #1976D2;
     }
   </style>
 </head>
@@ -90,6 +115,14 @@
                   <i class="fab fa-twitter"></i>
                   結果をポストする
                 </a>
+              </div>
+            </v-col>
+          </v-row>
+          <!-- ホームページへ戻るボタン -->
+          <v-row class="d-flex align-center justify-center">
+            <v-col class="d-flex align-center justify-center">
+              <div class="back-home-button">
+                <a href="index_HomePage.html">ホームページへ戻る</a>
               </div>
             </v-col>
           </v-row>

@@ -68,18 +68,21 @@
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     }
     .hero-image {
-      width: 100%;
-      height: 500px;
+      width: 100vw; /* ビューポートの幅に合わせる */
+      height: 100vh; /* ビューポートの高さに合わせる */
       background-image: url('https://example.com/your-image.jpg');
       background-size: cover;
       background-position: center;
       position: fixed;
       top: 0;
       left: 0;
+      right:0;
       z-index: -1;
       opacity: 0;
       transform: scale(1.1);
       transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+      margin: 20px;
+      overflow: hidden;
     }
     .hero-image.visible {
       opacity: 1;
@@ -95,9 +98,9 @@
     .v-footer {
       background-color: #004d40; /* 濃い緑 */
       color: white;
-      padding: 30px;
+      padding: 7px;
       text-align: center;
-      border-top: 6px solid #00332a;
+      border-top: 3px solid #00332a;
     }
     .reservation-btn {
       display: block;
@@ -149,7 +152,6 @@
           <div class="image-container">
             <img src="pray1.jpg" alt="神社の写真">
           </div>
-          <div class="content" id="OverviewOfPrayer"></div>
           <h1 class="main-title">神社のご祈祷</h1>
 
           <!-- コラムセクション -->
@@ -260,4 +262,3 @@
   </script>
 </body>
 </html>
-
