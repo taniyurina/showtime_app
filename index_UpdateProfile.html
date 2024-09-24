@@ -34,7 +34,12 @@
     .update-button {
       text-align: center;
       margin-top: 20px;
+      color: white; 
     }
+    .v-btn.gray {
+  color: white; 
+    }
+
   </style>
 </head>
 <body>
@@ -59,10 +64,10 @@
           </v-row>
           <v-row>
             <v-col cols="6" class="update-button">
-              <v-btn color="primary" type="submit" large>更新する</v-btn>
+              <v-btn color="grey" @click="confirmCancel" large>キャンセル</v-btn>
             </v-col>
             <v-col cols="6" class="update-button">
-              <v-btn color="secondary" @click="confirmCancel" large>キャンセル</v-btn>
+              <v-btn color="primary" type="submit" large>更新する</v-btn>
             </v-col>
           </v-row>
         </v-form>

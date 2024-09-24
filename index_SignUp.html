@@ -267,6 +267,21 @@
           ]
         };
       },
+      created() {
+    const customerData = localStorage.getItem('customer');
+    if (customerData) {
+      const customer = JSON.parse(customerData);
+      this.lastName = customer.name.split(' ')[0]; // 名字
+      this.firstName = customer.name.split(' ')[1]; // 名前
+      this.phone = customer.phone;
+      const emailParts = customer.email.split('@');
+      this.emailLocalPart = emailParts[0];
+      this.emailDomain = emailParts[1];
+      this.address = customer.address;
+      this.password = customer.password;
+    }
+  },
+
       computed: {
         isPhoneValid() {
           return this.phone.length === 11;
@@ -310,7 +325,18 @@
         convertToHalfWidthAndRestrict(field) {
           const validChars = /[^\uFF00-\uFFEFa-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]/g; // 全角文字を許可
   　　　　this[field] = this[field].replace(validChars, ''); // 無効な文字を削除
-        }
+        },
+        goBack() {
+      localStorage.setItem('customer', JSON.stringify({
+        name: `${this.lastName} ${this.firstName}`,
+        phone: this.phone,
+        email: `${this.emailLocalPart}@${this.emailDomain}`,
+        address: this.address,
+        password: this.password 
+      }));
+      window.location.href = 'index_SignUp.html';
+    }
+
       }
     });
   </script>
