@@ -120,28 +120,30 @@
   .reservation-time {
     font-size: 15px;
   }
-  .home-button {
-    display: inline-block; /* インラインブロックでサイズを調整 */
-    padding: 10px 20px; /* ボタンのパディングを追加 */
-    font-size: 16px; /* フォントサイズを更新ボタンと同じに */
-    color: #ffffff; /* 文字色 */
-    background-color:#007bff; /* 更新ボタンと同じ背景色 */
-    border-radius: 5px; /* ボーダーの角を丸く */
+  .home-button{
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    padding: 20px 50px; 
+    font-size: 18px; 
+    color: #ffffff; 
+    background-color:#007bff; 
+    border-radius: 5px; 
     text-align: center;
     text-decoration: none;
-    transition: background-color 0.3s, transform 0.3s; /* ホバー効果 */
+    transition: background-color 0.3s, transform 0.3s; 
 }
 
 .home-button:hover {
-    background-color: #0056b3; /* ホバー時の背景色 */
-    transform: scale(1.05); /* ホバー時の拡大効果 */
+    background-color: #0056b3; 
+    transform: scale(1.05); 
 }
 
 .home-button-container {
-    display: flex; /* フレックスボックスで中央配置 */
-    justify-content: center; /* 中央揃え */
-    margin-top: auto; /* 上の要素との間隔を確保 */
-    margin-bottom: 20px; /* 下の余白を確保 */
+    display: flex; 
+    justify-content: center; 
+    margin-top: auto; 
+    
 }
 
 
@@ -233,9 +235,12 @@
             </v-card>
           </v-col>
         </v-row>
-        <v-col cols="12" class="home-button-container">
-          <a href="index_HomePage.html" class="home-button">ホームページへ戻る</a>
-      </v-col>
+    <v-col cols="12" class="home-button-container">
+      <v-btn color="primary" class="home-button" href="index_HomePage.html">
+        <span>ホームページに戻る</span>
+      </v-btn>
+    </v-col>
+    
       </v-container>
     </v-app>
   </div>
