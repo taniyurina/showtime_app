@@ -12,6 +12,9 @@
       margin: 0;
       padding: 0;
       overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
     }
     .main-title {
       text-align: center;
@@ -28,8 +31,6 @@
       opacity: 1;
       transform: translateY(0);
     }
-
-    
     .section-title {
       font-size: 28px;
       font-weight: bold;
@@ -47,7 +48,7 @@
       opacity: 0;
       transform: translateY(20px);
       transition: opacity 1s ease-in-out, transform 1s ease-in-out;
-      margin: 0 auto 80px auto;
+      margin: 0 auto 20px auto;
       scroll-margin-top: 80px;
     }
     .content.visible {
@@ -108,116 +109,63 @@
       text-align: center;
       margin-top: 30px;
     }
-    .member-signup {
-      color: #0288d1;
-      font-weight: bold;
-    }
     .v-btn {
       margin: 5px;
     }
-    .signup-btn, .mypage-btn {
-      color: #ffffff;
-      font-weight: bold;
-      margin-left: 10px;
+    .pagetop {
+      height: 50px;
+      width: 50px;
+      position: fixed;
+      right: 30px;
+      bottom: 70px;
+      background: #fff;
+      border: solid 2px #000;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 2;
+      box-shadow: 0 4px 6px rgb(0 0 0 / 30%);
     }
-    .v-footer .signup-btn, .v-footer .mypage-btn {
-      color: #0288d1;
+    .pagetop__arrow {
+      height: 10px;
+      width: 10px;
+      border-top: 3px solid #000;
+      border-right: 3px solid #000;
+      transform: translateY(20%) rotate(-45deg);
     }
-
-    .announcement {
-      background-color: #ffffff;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      padding: 20px;
-      margin: 20px 0;
-      border-left: 4px solid #0288d1;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 1s ease-in-out, transform 1s ease-in-out;
-    }
-
-    .announcement.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .announcement h2 {
-      font-size: 24px;
-      margin-bottom: 15px;
-      color: #0288d1;
-      border-bottom: 2px solid #0288d1;
-      padding-bottom: 10px;
-    }
-
-    .announcement-link {
-      display: block;
-      margin-bottom: 10px;
-      color: #1a73e8;
-      text-decoration: none;
-      transition: color 0.3s ease, background-color 0.3s ease;
-      padding: 10px;
-      border-radius: 4px;
-    }
-
-    .announcement-link:hover {
-      color: #0288d1;
-      background-color: #e3f2fd;
-      text-decoration: underline;
-    }
-
-    .intro-content {
-      font-family: 'Georgia', serif; /* フォントを変更 */
-      font-size: 20px; /* サイズを変更 */
-      line-height: 1.6; /* 行間を調整 */
-      background-color: #f9f9f9; /* 背景色を追加 */
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      margin: 0 auto 80px auto;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 1s ease-in-out, transform 1s ease-in-out;
-      scroll-margin-top: 80px;
-    }
-    
-    .intro-content.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    html {
-    scroll-behavior: smooth;
-}
-.pagetop {
-    height: 50px;
-    width: 50px;
-    position: fixed;
-    right: 30px;
-    bottom: 70px;
-    background: #fff;
-    border: solid 2px #000;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 2;
-    box-shadow: 0 4px 6px rgb(0 0 0 / 30%);
-}
-
-.pagetop__arrow {
-    height: 10px;
-    width: 10px;
-    border-top: 3px solid #000;
-    border-right: 3px solid #000;
-    transform: translateY(20%) rotate(-45deg);
-}
-@media (hover: hover) and (pointer: fine) {
-    .pagetop:hover, .pagetop:hover .pagetop__arrow {
+    @media (hover: hover) and (pointer: fine) {
+      .pagetop:hover, .pagetop:hover .pagetop__arrow {
         border-color: #3293e7;
+      }
     }
-}
-
-
+    /* フッターのスタイル */
+    .v-footer {
+      position: relative; /* 変更: fixedからrelativeに */
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 1;
+      background-color: white;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+      padding: 10px 0; /* 追加: パディングを追加 */
+    }
+    .announcement {
+      margin: 20px 0; /* 追加: お知らせセクションのマージン調整 */
+      padding: 10px; /* 追加: お知らせセクションのパディング */
+      background-color: #f5f5f5; /* 追加: 背景色 */
+      border-radius: 8px; /* 追加: 角を丸める */
+    }
+    .announcement-link {
+      display: block; /* 各お知らせをブロック要素に */
+      margin: 5px 0; /* マージンを設定 */
+      color: #0288d1; /* テキストカラーを設定 */
+      text-decoration: none; /* 下線を消す */
+      transition: color 0.3s; /* ホバー時のトランジション */
+    }
+    .announcement-link:hover {
+      color: #ff5722; /* ホバー時の色変更 */
+    }
   </style>
 </head>
 <body>
@@ -226,13 +174,15 @@
       <v-app-bar app color="primary" dark>
         <v-toolbar-title>架空神社</v-toolbar-title>
         <v-spacer></v-spacer>
-         <v-divider class="mx-4" vertical thickness="5" color="#3293e7" Inset></v-divider>
+        <v-divider class="mx-4" vertical thickness="5" color="#3293e7" inset></v-divider>
         <v-btn text href="#prayer">ご祈祷</v-btn>
-        <v-divider class="mx-4" vertical thickness="5" color="#3293e7" Inset></v-divider>
+        <v-divider class="mx-4" vertical thickness="5" color="#3293e7" inset></v-divider>
         <v-btn text href="#shop">公式ショップ</v-btn>
-        <v-divider class="mx-4" vertical thickness="5" color="#3293e7" Inset></v-divider>
+        <v-divider class="mx-4" vertical thickness="5" color="#3293e7" inset></v-divider>
         <v-btn text href="#contact">お問い合わせ</v-btn>
-        <v-divider class="mx-4" vertical thickness="5" color="#3293e7" Inset></v-divider>
+        <v-divider class="mx-4" vertical thickness="5" color="#3293e7" inset></v-divider>
+        <v-btn text href="#access">アクセス</v-btn> <!-- ここに「アクセス」ボタンを追加 -->
+        <v-divider class="mx-4" vertical thickness="5" color="#3293e7" inset></v-divider>
         <v-btn text href="index.html" class="mypage-btn">マイページ</v-btn> 
       </v-app-bar>
 
@@ -245,12 +195,12 @@
           </div>
 
           <h1 class="main-title">架空神社</h1>
-
           <!-- 神社の紹介 -->
-          <div class="intro-content" id="intro">
+          <div class="intro-content" id="intro" style="font-family: 'Times New Roman', 'Mincho', serif; font-weight: bold;">
             <h2 class="section-title">神社の紹介</h2>
             <p>架空神社は、静かな森の中に佇む歴史ある神社です。この神社は、地域の人々に愛される場として、また訪れる人々に心の平安をもたらす場として、多くの人に親しまれています。四季折々の美しい風景と共に、心安らぐひとときをお過ごしください。当神社では、特別な行事や祭りも開催しており、訪れるたびに新しい体験が待っています。<br>ぜひ、架空神社の魅力を感じにいらしてください。</p>
           </div>
+
 
           <!-- おしらせ -->
           <div class="announcement" id="Announcement">
@@ -263,27 +213,28 @@
           <div class="content" id="hours">
             <h2 class="section-title">神社の営業時間</h2>
             <p>平日: 9:00 - 17:00<br>
-              土日祝: 9:00 - 18:00</p>
+              土日: 8:00 - 18:00<br>
+              祝日: 9:00 - 18:00
+            </p>
           </div>
 
-          <!-- 参拝方法 -->
-          <div class="content" id="methods">
-            <h2 class="section-title">参拝方法</h2>
-            <p>神社を参拝する際の一般的な流れは以下の通りです。</p>
-            <ol>
-              <li>境内に入る前に一礼します。</li>
-              <li>手水舎で手と口を清めます。</li>
-              <li>本殿に進み、賽銭を入れます。</li>
-              <li>鈴を鳴らし、二礼二拍手一礼を行います。</li>
-            </ol>
+          <!-- お参りの仕方 -->
+          <div class="content" id="visiting">
+            <h2 class="section-title">お参りの仕方</h2>
+            <p>神社にお越しの際は、以下の手順でお参りください。<br>
+              1. 鳥居をくぐる<br>
+              2. 手水舎で手と口を清める<br>
+              3. 本殿にお参りする<br>
+              4. お賽銭を入れる<br>
+              5. 二礼二拍手一礼でお祈りする</p>
           </div>
 
           <!-- ご祈祷 -->
           <div class="content" id="prayer">
             <h2 class="section-title">ご祈祷</h2>
-            <p>当神社では、皆様の健康や幸せを祈るための御祈祷を行っています。特に、家族の健康や商売繁盛、交通安全など、さまざまなご祈祷に対応しています。ぜひご予約の上、ご参加ください。</p>
+            <p>当神社では、様々なご祈祷を行っています。新年のご祈祷や家内安全、商売繁盛、交通安全など、ご祈祷の種類は多岐にわたります。皆様の幸せを祈るための御祈祷を行っています。特に、家族の健康や商売繁盛、交通安全など、さまざまなご祈祷に対応しています。ぜひご予約の上、ご参加ください。</p>
             <div class="button-container">
-              <v-btn color="primary" href="index_GokitouHomePage.html">ご祈祷予約ページへ</v-btn>
+              <v-btn color="primary" href="index_GokitouHomePage.html">ご祈祷の予約</v-btn>
             </div>
           </div>
 
@@ -292,7 +243,7 @@
             <h2 class="section-title">公式ショップ</h2>
             <p>神社の公式グッズやお守りなどはこちらからご購入いただけます。訪れた際には、ぜひお立ち寄りください。オンラインショップもご利用いただけます。</p>
             <div class="button-container">
-              <v-btn color="primary" href="index_ProductsPurchasePage.html" target="_blank">公式ショップへ</v-btn>
+              <v-btn color="primary" href="index_ProductsPurchasePage.html">公式ショップへ</v-btn>
             </div>
           </div>
 
@@ -303,7 +254,23 @@
               神社に行かなくてもあなたの運勢を簡単に知ることができます。おみくじを引いて今のあなたの運勢を見てみましょう。ワクワクしながらタップしてみてください。運勢はあなたの手の中に！✨
             </p>
             <div class="button-container">
-              <v-btn color="primary" href="index_form.html" target="_blank">おみくじを引く</v-btn>
+              <v-btn color="primary" href="index_form.html">おみくじを引く</v-btn>
+            </div>
+          </div>
+
+          <!-- アクセス -->
+          <div class="content" id="access">
+            <h2 class="section-title">アクセス</h2>
+            <p>住所: 東京都架空区架空町1-1-1</p>
+            <p>アクセス方法: JR架空駅から徒歩10分</p>
+            <div class="map-container">
+              <iframe 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3240.216147904779!2d139.69170621525603!3d35.68948792414538!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x60188b0ff3abaaa9%3A0xe4753f9292c49b8!2z44Kt44Oz44O844Or44Oq44O844O844O844O844O844Oa44OJ44K944Oq44O844Or44O844Oe44Kv!5e0!3m2!1sja!2sjp!4v1623429915000!5m2!1sja!2sjp" 
+                width="100%" 
+                height="100%" 
+                style="border:0;" 
+                allowfullscreen="" 
+                loading="lazy"></iframe>
             </div>
           </div>
 
@@ -312,7 +279,7 @@
             <h2 class="section-title">お問い合わせ</h2>
             <div class="contact-info">
               <p>電話番号: 03-1234-5678</p>
-              <p>メール: <a href="mailto:info@kakushinjinja.jp">info@kakujinja.jp</a></p>
+              <p>メール: <a href="mailto:info@kakujinja.jp">info@kakujinja.jp</a></p>
             </div>
           </div>
         </v-container>
@@ -320,9 +287,10 @@
 
       <a class="pagetop" href="#"><div class="pagetop__arrow"></div></a>
 
-      <v-footer app>
+      <v-footer class="v-footer">
         <v-col class="text-center" cols="12">
-          <span>© 2024 架空神社</span>
+          <span>© 2024 架空神社</span><br>
+          <span>住所: 東京都架空区架空町1-1-1</span>
         </v-col>
       </v-footer>
     </v-app>

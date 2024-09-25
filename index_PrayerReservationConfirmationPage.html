@@ -113,27 +113,21 @@
         };
       },
       async created() {
-        // ローカルストレージから予約情報を取得
         const reservationData = localStorage.getItem('reservationprayer');
         if (reservationData) {
           this.reservation = JSON.parse(reservationData);
         }
-        // セッションストレージから顧客IDを取得
         const CustomerID = sessionStorage.getItem('CustomerID');
-        console.log('Fetched CustomerID from sessionStorage:', CustomerID);
         if (CustomerID) {
           try {
-            // 顧客情報の取得
             const profileApiEndpoint = `https://m3h-hasegawa-recreation3.azurewebsites.net/api/CustomerProfile?CustomerID=${CustomerID}`;
             const profileResponse = await axios.get(profileApiEndpoint);
             if (profileResponse.status === 200) {
-              this.customer = profileResponse.data; // 顧客情報を設定
+              this.customer = profileResponse.data;
             } else {
-              console.error('Error fetching data:', profileResponse);
               alert('顧客情報の取得に失敗しました。');
             }
           } catch (error) {
-            console.error('Error fetching customer information:', error);
             alert('顧客情報の取得に失敗しました。');
           }
         }
@@ -156,20 +150,33 @@
             });
 
             if (response.status === 200) {
-              localStorage.clear(); // 注文完了後にローカルストレージをクリア
-              window.location.href = 'index_PrayerReservationSuccess.html'; // 成功ページにリダイレクト
+              const emailRequest = {
+                Email: this.customer.email,
+                Subject: "予約確認",
+                Content: `予約が確定しました。日付: ${this.reservation.ReservationDate}, 時間: ${this.reservation.ReservationTime}`
+              };
+
+              await fetch('https://m3h-tomoki-3appfunctionapiapp.azurewebsites.net/SendEmail', {  // ここを自分のAzure FunctionのURLに置き換え
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(emailRequest)
+              });
+
+              localStorage.clear();
+              window.location.href = 'index_PrayerReservationSuccess.html';
             } else {
               alert('予約に失敗しました。後ほど再試行してください。');
             }
           } catch (error) {
-            console.error('予約処理中にエラーが発生しました:', error);
             alert('予約に失敗しました。後ほど再試行してください。');
           }
         },
         goBack() {
           if (confirm('戻ると日時を再選択する必要があります。よろしいですか？')) {
-            localStorage.removeItem('reservationprayer'); // ローカルストレージから予約情報を削除
-            window.location.href = 'index_PrayerReservation.html'; // 予約ページに戻る
+            localStorage.removeItem('reservationprayer');
+            window.location.href = 'index_PrayerReservation.html';
           }
         }
       }
