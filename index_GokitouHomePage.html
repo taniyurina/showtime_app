@@ -129,6 +129,12 @@
     .back-to-home i {
       margin: 0;
     }
+    .home-button-container {
+    display: flex; 
+    justify-content: right; 
+    margin-top: auto; 
+    
+}
   </style>
 </head>
 <body>
@@ -152,7 +158,8 @@
           <div class="image-container">
             <img src="pray1.jpg" alt="神社の写真">
           </div>
-          <h1 class="main-title">神社のご祈祷</h1>
+        
+          <h1 class="main-title" id="OverviewOfPrayer">神社のご祈祷</h1>
 
           <!-- コラムセクション -->
           <v-container>
@@ -206,6 +213,13 @@
               <v-btn color="primary" href="index_PrayerReservation.html" target="_blank">ご祈祷予約フォーム</v-btn>
             </div>
           </div>
+
+          <v-col cols="12" class="home-button-container">
+            <v-btn color="primary" class="home-button" href="index_HomePage.html">
+              <span>ホームページに戻る</span>
+            </v-btn>
+          </v-col>
+
         </v-container>
       </v-main>
 
