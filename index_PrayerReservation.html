@@ -28,6 +28,11 @@
       color: #6200ea;
       font-weight: bold;
     }
+    .v-date-picker {
+  max-width: 300px; /* 必要に応じて調整 */
+  margin: 0 auto; /* センタリング */
+}
+
   </style>
 </head>
 <body>
@@ -51,12 +56,13 @@
           <v-card-text>
             <v-form>
               <v-row>
-                <v-col cols="12" class="form-field">
+                <v-col cols="6" class="form-field">
                   <v-menu
                     v-model="menu"
                     :close-on-content-click="false"
                     transition="scale-transition"
                     offset-y
+                    
                   >
                     <template v-slot:activator="{ on, attrs }">
                       <v-text-field
@@ -70,7 +76,7 @@
                     <v-date-picker v-model="date" @input="menu = false"></v-date-picker>
                   </v-menu>
                 </v-col>
-                <v-col cols="12" class="form-field">
+                <v-col cols="7" class="form-field">
                   <v-select
                     v-model="time"
                     :items="availabletimes"
